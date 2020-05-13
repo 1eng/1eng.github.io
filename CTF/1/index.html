@@ -1,311 +1,600 @@
 <!DOCTYPE html>
-<html>
-  <head>
-      <script>
-  var _hmt = _hmt || []
-  ;(function() {
-    var hm = document.createElement('script')
-    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
-    var s = document.getElementsByTagName('script')[0]
-    s.parentNode.insertBefore(hm, s)
-  })()
-</script> 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="学无止境啊!学吧,太深了!" />
-    
-    <title>
-      哈希长度扩展攻击 - 欢迎来访哦!
-    </title>
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
-    
-<link rel="stylesheet" href="/style/style.css">
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>哈希长度扩展攻击 | 欢迎来访</title>
+  <meta name="description" content="攻击的常见来源:大多数网站有下载文件的选项,它会判断你是否具有权限下载这个文件,就会对你想要下载的任意文件名进行类似于MD5,Sha等算法的hash,例如你想要下载hash&#x3D;test.pdf%00..&#x2F;..&#x2F;..&#x2F;etc&#x2F;password它就可能执行判断语句:if ($sig &#x3D;&#x3D;&#x3D; md5($salt.$name))但是这样的话就有可能被绕过的风险 MD5算法解析:Md5的典型应用是对一段字符串">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈希长度扩展攻击">
+<meta property="og:url" content="http://perthinking.xyz/CTF/1/index.html">
+<meta property="og:site_name" content="欢迎来访哦!">
+<meta property="og:description" content="攻击的常见来源:大多数网站有下载文件的选项,它会判断你是否具有权限下载这个文件,就会对你想要下载的任意文件名进行类似于MD5,Sha等算法的hash,例如你想要下载hash&#x3D;test.pdf%00..&#x2F;..&#x2F;..&#x2F;etc&#x2F;password它就可能执行判断语句:if ($sig &#x3D;&#x3D;&#x3D; md5($salt.$name))但是这样的话就有可能被绕过的风险 MD5算法解析:Md5的典型应用是对一段字符串">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-19T10:45:11.000Z">
+<meta property="article:modified_time" content="2020-05-13T07:25:58.361Z">
+<meta property="article:author" content="1eng">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://perthinking.xyz/CTF/1/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="欢迎来访哦!" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-  <meta name="generator" content="Hexo 4.2.0"></head>
-  <body>
-    <canvas id='pagemap'></canvas>
-    
-    <div id="post-toc" class="animated hiddenToc hide">
-      <span class="title">Toc</span>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#攻击的常见来源"><span class="toc-text">攻击的常见来源:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MD5算法解析"><span class="toc-text">MD5算法解析:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#攻击原理"><span class="toc-text">攻击原理:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#构造hash"><span class="toc-text">构造hash:</span></a></li></ol>
-    </div>
-    
-    <div id="fixed-menu-wrap">
-      <span class="iconfont icon-sousuo search-box menu-reset"></span>
-      <span class="icon-toc menu-reset">Toc</span>
-      <span class="iconfont icon-arrowup menu-reset"></span>
-    </div>
-    <div id="fixed-menu">
-      <span class="iconfont icon-menu-"></span>
-    </div>
-    <div id="progress">
-      <div class="line"></div>
-    </div>
-    <div id="search-shade" class="animated hiddenSearch hide">
-      <div class="input-wrap">
-        <span class="iconfont icon-sousuo search-box"></span>
-        <input type="text" placeholder="Search" />
-        <span class="iconfont icon-close"></span>
-      </div>
-      <div class="search-result">
-        <div class="meta">
-          <span><b id="result-count">0</b> results found</span>
-          <img src="/images/logo.jpeg" />
-        </div>
-        <ul id="result-box"></ul>
-      </div>
-    </div>
-    <div id="menu-mask" class="animated hideMenuMask hide">
-      <span class="iconfont icon-close"></span>
-      <div class="nav">
-        
-        <a href="/" class="">
-          首页
-        </a>
-        
-        <a href="/archives" class="">
-          归档
-        </a>
-        
-        <a href="/categories" class="">
-          分类
-        </a>
-        
-        <a href="/tags" class="">
-          标签
-        </a>
-        
-        <a href="/friends" class="">
-          友链
-        </a>
-        
-        <a href="/about" class="">
-          关于
-        </a>
-        
-      </div>
-    </div>
-    <div id="header">
-      <div class="intro">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <div class="author">1eng</div>
-      </div>
-      <div class="nav">
-        <span class="iconfont icon-menu menu-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-    </div>
-    <div id="side" class="animated bounceInLeft">
-      <div class="shrink">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <span class="iconfont icon-menu toggle-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-      <div class="magnify">
-        <div class="about">
-          <div class="author">1eng</div>
-          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        </div>
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-        <div class="nav">
-          
-          <a href="/" class="">
-            首页
-          </a>
-          
-          <a href="/archives" class="">
-            归档
-          </a>
-          
-          <a href="/categories" class="">
-            分类
-          </a>
-          
-          <a href="/tags" class="">
-            标签
-          </a>
-          
-          <a href="/friends" class="">
-            友链
-          </a>
-          
-          <a href="/about" class="">
-            关于
-          </a>
-          
-          <a href="#" class="search-box">
-            <span class="iconfont icon-sousuo"></span>
-          </a>
-        </div>
-        <div class="bottom">
-          <div class="follow">
-            
-            <a href="https://github.com/1eng" target="_block">
-              <span class="iconfont icon-github"></span>
-            </a>
-            
-            <a href="2469133675" target="_block">
-              <span class="iconfont icon-QQ"></span>
-            </a>
-             
-            <a href="/atom.xml" target="_block">
-              <span class="iconfont icon-rss"></span>
-            </a>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="container">
-      <div class="main animated bounceInRight delay-0.7s">
-        <article class="post-entry">
-    <div class="header">
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-      <div class="title">哈希长度扩展攻击</div>
-      <div class="meta">
-        <span class="item">
-          <span class="iconfont icon-time-circle"></span>
-          <span>2020/04/19</span>
-        </span>
-
-        
-          <span class="item leancloud-visitors" id="/CTF/1/" data-flag-title="哈希长度扩展攻击">
-            <span class="iconfont icon-eye1"></span>
-            <span class="leancloud-visitors-count"></span>
-          </span>
-        
-
-         
-        <span class="item">
-          <span class="iconfont icon-folder"></span>
-          <span>
-              
-                
-                  <a href="/categories/CTF">CTF</a>
-                
-              
-          </span>
-        </span>
-        
-        
-        
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/1eng" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">1eng</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Information Security &amp; Student</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 江西, 中国</small>
       </div>
-      <div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTB%E9%9D%B6%E6%9C%BA/">HTB靶机</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+
+    
+      
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/6/" class="title">Soapclient+crlf+ssrf(原理)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-06T01:31:01.000Z" itemprop="datePublished">2020-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/5/" class="title">Flask-session伪造-[CISCN2019 华东南赛区]Web4</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-06T01:12:42.000Z" itemprop="datePublished">2020-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/4/" class="title">Bypass disfuction-攻防世界smarty</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-05T14:29:14.000Z" itemprop="datePublished">2020-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/3/" class="title">phar反序列化(原理)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-05T14:05:55.000Z" itemprop="datePublished">2020-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/HTB%E9%9D%B6%E6%9C%BA/">HTB靶机</a>
+              </p>
+              <p class="item-title">
+                <a href="/HTB%E9%9D%B6%E6%9C%BA/1/" class="title">HTB靶机练习-Control</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-05T13:01:18.000Z" itemprop="datePublished">2020-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#攻击的常见来源"><span class="toc-number">1.</span> <span class="toc-text">攻击的常见来源:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MD5算法解析"><span class="toc-number">2.</span> <span class="toc-text">MD5算法解析:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#攻击原理"><span class="toc-number">3.</span> <span class="toc-text">攻击原理:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#构造hash"><span class="toc-number">4.</span> <span class="toc-text">构造hash:</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-ctf1" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      哈希长度扩展攻击
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/CTF/1/" class="article-date">
+	  <time datetime="2020-04-19T10:45:11.000Z" itemprop="datePublished">2020-04-19</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/CTF/">CTF</a>
+  </span>
+
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/CTF/1/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 871(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 3(分)</span>
+	
+
       </div>
     </div>
-    <html><head></head><body><h1 id="攻击的常见来源">攻击的常见来源:<a class="post-anchor" href="#攻击的常见来源"></a></h1><p>大多数网站有下载文件的选项,它会判断你是否具有权限下载这个文件,就会对你想要下载的任意文件名进行类似于MD5,Sha等算法的hash,例如你想要下载hash=test.pdf%00../../../etc/password<br>它就可能执行判断语句:<br>if ($sig === md5($salt.$name))<br>但是这样的话就有可能被绕过的风险</p>
-<h1 id="MD5算法解析">MD5算法解析:<a class="post-anchor" href="#MD5算法解析"></a></h1><p>Md5的典型应用是对一段字符串产生指纹,防止被篡改.就相当于每个人都有自己独立的指纹(在算法里面是可以绕过的)<br>MD5以多个512位(64个字节)分组来处理文本,每组16个32位(4个字节)子分组.算法输出由32位分组组成.当每一个块(512位分组)计算完成后,四个寄存器的值就被更新,如果还存在下一个块,就会在被更新的寄存器上继续计算,直到所有块被计算完毕,四个寄存器的十六进制值连接起来就是MD5<br>当被hash的字符串长度不足512bit时,就得部位</p>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="攻击的常见来源"><a href="#攻击的常见来源" class="headerlink" title="攻击的常见来源:"></a>攻击的常见来源:</h1><p>大多数网站有下载文件的选项,它会判断你是否具有权限下载这个文件,就会对你想要下载的任意文件名进行类似于MD5,Sha等算法的hash,例如你想要下载hash=test.pdf%00../../../etc/password<br>它就可能执行判断语句:<br>if ($sig === md5($salt.$name))<br>但是这样的话就有可能被绕过的风险</p>
+<h1 id="MD5算法解析"><a href="#MD5算法解析" class="headerlink" title="MD5算法解析:"></a>MD5算法解析:</h1><p>Md5的典型应用是对一段字符串产生指纹,防止被篡改.就相当于每个人都有自己独立的指纹(在算法里面是可以绕过的)<br>MD5以多个512位(64个字节)分组来处理文本,每组16个32位(4个字节)子分组.算法输出由32位分组组成.当每一个块(512位分组)计算完成后,四个寄存器的值就被更新,如果还存在下一个块,就会在被更新的寄存器上继续计算,直到所有块被计算完毕,四个寄存器的十六进制值连接起来就是MD5<br>当被hash的字符串长度不足512bit时,就得部位</p>
 <p>部位(补bit和补长度)<br>判断len(str) % 512 = 448 ,如果不是的话,就对它进行部位,例如test为四个字节,要让条件成立的话,就必须补(448-4*8)个bit,首先补一个二进制位上的一个1,接着在后面补0.然后补剩下的64bit的长度,<br>这个长度就是字符串的长度,如果超出64位,就取低64位<br>例如补完一个块可能是这样的:</p>
-<p><code>Str + '\x80' + '\x00'*n + '\x00\x00\x00\x00\x00\x00\x00\x00'</code></p>
+<p><code>Str + &#39;\x80&#39; + &#39;\x00&#39;*n + &#39;\x00\x00\x00\x00\x00\x00\x00\x00&#39;</code></p>
 <p>其中算法的补位这部分,就是实现长度扩展攻击的关键,所以部位肯定是可控的</p>
-<h1 id="攻击原理">攻击原理:<a class="post-anchor" href="#攻击原理"></a></h1><p>构造部位:</p>
+<h1 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理:"></a>攻击原理:</h1><p>构造部位:</p>
 <p>假如有一个下载文件的题目,已知字符串 ‘secret+test.pdf’的hash值,secret的长度为10,要求你下载这个网站的其它文件</p>
 <p>实现攻击的第一步,将secret+test.pdf补足到64字节</p>
-<p><code>Len(secret) + len("test.pdf") + len(padding) + 8 = 64</code></p>
+<p><code>Len(secret) + len(&quot;test.pdf&quot;) + len(padding) + 8 = 64</code></p>
 <p>可以计算出padding的长度为64-8-10-8=38</p>
 <p>先补一个二进制位上的1即”\x80” 和37个0即”\x00”<em>37,于是变成了这样:</em></p>
-<p><code>Secret + "test.pdf" + "\x80" + "\x00"*37 + 8</code></p>
+<p><code>Secret + &quot;test.pdf&quot; + &quot;\x80&quot; + &quot;\x00&quot;*37 + 8</code></p>
 <p>再补后面的8个字节,这8个字节的内容是len(secret+test.pdf)即18(144位),换算成16进制就是\x90 + 7个二进制位上的0  所以变成:</p>
-<p><code>Secret + "test.pdf" + "\x80" + "\x00"*37 + "\x90\x00\x00\x00\x00\x00\x00\x00"</code></p>
+<p><code>Secret + &quot;test.pdf&quot; + &quot;\x80&quot; + &quot;\x00&quot;*37 + &quot;\x90\x00\x00\x00\x00\x00\x00\x00&quot;</code></p>
 <p>​    </p>
-<h1 id="构造hash">构造hash:<a class="post-anchor" href="#构造hash"></a></h1><p>用工具爆破即可</p>
+<h1 id="构造hash"><a href="#构造hash" class="headerlink" title="构造hash:"></a>构造hash:</h1><p>用工具爆破即可</p>
 <p>所以:构造补位就是为了不用计算第一块的值,只需要计算第二块或者第二块以后的值,而初始值就是原来的hash(这个知道就行了),然后用构造的字符串计算出新的hash</p>
 <p>题目主要源码:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">if (!empty($_COOKIE["getmein"])) {</span><br><span class="line">    if (urldecode($username) === "admin" && urldecode($password) != "admin") {</span><br><span class="line">        if ($COOKIE["getmein"] === md5($secret . urldecode($username . $password))) {</span><br><span class="line">            echo "Congratulations! You are a registered user.\n";</span><br><span class="line">            die ("The flag is ". $flag);</span><br><span class="line">        }</span><br><span class="line">        else {</span><br><span class="line">            die ("Your cookies don't match up! STOP HACKING THIS SITE.");</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    else {</span><br><span class="line">        die ("You are not an admin! LEAVE.");</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>绕过条件:<br><code>username=admin password!=admin  
-$COOKIE["getmein"] === md5($secret . urldecode($username . $password))</code><br>用脚本爆破是不可能的,因为我尝试过了<br>所以用到了hash长度扩展攻击,条件符合<br>直接上HashPump脚本</p>
-</body></html>
-
-  
-  <div class="post-guide">
-    <div class="item left">
-        
-          <a href="/CTF/2/">代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019</a>
-        
-    </div>
-    <div class="item right">
-        
-    </div>
-  </div>
-
-  
-
-  <div class="post-copyright">
-    <div class="auth">
-      本文作者：<a href="http://perthinking.xyz">1eng</a>
-    </div>
-    <div class="link">
-      永久链接：<a href="http://perthinking.xyz/CTF/1/">http://perthinking.xyz/CTF/1/</a>
-    </div>
-    <div class="declare">
-      版权声明：本文首发于<a href="http://perthinking.xyz">1eng</a>的博客，转载请注明出处！
-    </div>
-  </div>
-
-  <div id="comment"></div>
-
-  
-  
-</article>
-        <footer>
-          <div class="copyright">
-            ©2020
-            <a href="http://perthinking.xyz">1eng</a> Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> |
-            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu" target="_blank" rel="noopener">hexo-theme-huhu</a>
-          </div>
-          
-        </footer>
-      </div>
-    </div>
-  </body>
-  
-</html>
-<script type="text/javascript">
-                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
-                </script> <script type="text/javascript">window.addEventListener('load', function() {
-    
-    window.loadJs = function(d, m, a) {
-      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
-      var b = document.createElement('script')
-      b.defer = true
-      b.setAttribute('type', 'text/javascript')
-      b.setAttribute('charset', 'UTF-8')
-      b.setAttribute('async', 'true')
-      b.setAttribute('src', d)
-      m && b.setAttribute('data-main', '/scripts/app-built')
-      if (typeof a === 'function') {
-        if (window.attachEvent) {
-          b.onreadystatechange = function() {
-            var e = b.readyState
-            if (e === 'loaded' || e === 'complete') {
-              b.onreadystatechange = null
-              a()
-            }
-          }
-        } else {
-          b.onload = a
+<pre><code>if (!empty($_COOKIE[&quot;getmein&quot;])) {
+    if (urldecode($username) === &quot;admin&quot; &amp;&amp; urldecode($password) != &quot;admin&quot;) {
+        if ($COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password))) {
+            echo &quot;Congratulations! You are a registered user.\n&quot;;
+            die (&quot;The flag is &quot;. $flag);
         }
-      }
-      c.appendChild(b)
+        else {
+            die (&quot;Your cookies don&#39;t match up! STOP HACKING THIS SITE.&quot;);
+        }
     }
-    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
-  })</script> <script type="text/javascript">
-                  ;(function() {
-                    var bp = document.createElement('script')
-                    var curProtocol = window.location.protocol.split(':')[0]
-                    if (curProtocol === 'https') {
-                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
-                    } else {
-                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
-                    }
-                    var s = document.getElementsByTagName('script')[0]
-                    s.parentNode.insertBefore(bp, s)
-                  })()
-                </script> 
+    else {
+        die (&quot;You are not an admin! LEAVE.&quot;);
+    }
+}</code></pre><p>绕过条件:<br><code>username=admin password!=admin  
+$COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password))</code><br>用脚本爆破是不可能的,因为我尝试过了<br>所以用到了hash长度扩展攻击,条件符合<br>直接上HashPump脚本</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://perthinking.xyz/CTF/1/" title="哈希长度扩展攻击" target="_blank" rel="external">http://perthinking.xyz/CTF/1/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/1eng" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/1eng" target="_blank"><span class="text-dark">1eng</span><small class="ml-1x">Information Security &amp; Student</small></a></h3>
+        <div>菜鸡一枚,哪位大佬收了我当挂件|···|</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/CTF/2/" title="代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'O0twhlXmhDaIrHEXxY8FBeB1-gzGzoHsz',
+    appKey: 'pIcHWaOiHXkAi1fMo3UsumkV',
+    placeholder: 'Ask your question, let&#39;s solve it together',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

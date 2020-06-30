@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Vulnhub靶场做题记录-Connect-the-dots | 欢迎来访</title>
+  <meta name="description" content="安装靶机,nmap扫描端口及服务: PORT   STATE SERVICE VERSION  111&#x2F;tcp  open rpcbind 2-4 (RPC #100000)  | rpcinfo:   |  program version  port&#x2F;proto service  |  100000 2,3,4    111&#x2F;tcp  rpcbind  |  100000 2,3,4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vulnhub靶场做题记录-Connect-the-dots">
+<meta property="og:url" content="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/9/index.html">
+<meta property="og:site_name" content="欢迎来访哦!">
+<meta property="og:description" content="安装靶机,nmap扫描端口及服务: PORT   STATE SERVICE VERSION  111&#x2F;tcp  open rpcbind 2-4 (RPC #100000)  | rpcinfo:   |  program version  port&#x2F;proto service  |  100000 2,3,4    111&#x2F;tcp  rpcbind  |  100000 2,3,4">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-30T13:17:40.000Z">
+<meta property="article:modified_time" content="2020-06-30T13:22:03.199Z">
+<meta property="article:author" content="1eng">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/9/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="欢迎来访哦!" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body class="main-center theme-blue" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/1eng" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">1eng</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Information Security &amp; Student</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 江西, 中国</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Elevation/">Elevation</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTB%E9%9D%B6%E6%9C%BA/">HTB靶机</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Webshell/">Webshell</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+
+    
+      
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Webshell/">Webshell</a>
+              </p>
+              <p class="item-title">
+                <a href="/Webshell/1/" class="title">Webshell总结(一)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T14:49:02.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/12/" class="title">Vulnhub靶场做题记录-Reconforce-01</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T14:26:13.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/11/" class="title">Vulnhub靶场做题记录-haclabs-no_name</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T14:05:31.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/10/" class="title">Vulnhub靶场做题记录-Djiin</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T13:23:31.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+              </p>
+              <p class="item-title">
+                <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/9/" class="title">Vulnhub靶场做题记录-Connect-the-dots</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-30T13:17:40.000Z" itemprop="datePublished">2020-06-30</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-vulnhub9" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vulnhub靶场做题记录-Connect-the-dots
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/Vulnhub%E9%9D%B6%E5%9C%BA/9/" class="article-date">
+	  <time datetime="2020-06-30T13:17:40.000Z" itemprop="datePublished">2020-06-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Vulnhub%E9%9D%B6%E5%9C%BA/">Vulnhub靶场</a>
+  </span>
+
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/9/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.3k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 5(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>   安装靶机,nmap扫描端口及服务:</p>
+<pre><code>PORT   STATE SERVICE VERSION
+
+111/tcp  open rpcbind 2-4 (RPC #100000)
+
+| rpcinfo: 
+
+|  program version  port/proto service
+
+|  100000 2,3,4    111/tcp  rpcbind
+
+|  100000 2,3,4    111/udp  rpcbind
+
+|  100000 3,4     111/tcp6 rpcbind
+
+|  100000 3,4     111/udp6 rpcbind
+
+|  100003 3      2049/udp  nfs
+
+|  100003 3      2049/udp6 nfs
+
+|  100003 3,4     2049/tcp  nfs
+
+|  100003 3,4     2049/tcp6 nfs
+
+|  100005 1,2,3   36766/udp  mountd
+
+|  100005 1,2,3   44555/tcp6 mountd
+
+|  100005 1,2,3   52763/udp6 mountd
+
+|  100005 1,2,3   55723/tcp  mountd
+
+|  100021 1,3,4   32812/udp6 nlockmgr
+
+|  100021 1,3,4   33025/tcp6 nlockmgr
+
+|  100021 1,3,4   40763/tcp  nlockmgr
+
+|  100021 1,3,4   58422/udp  nlockmgr
+
+|  100227 3      2049/tcp  nfs_acl
+
+|  100227 3      2049/tcp6 nfs_acl
+
+|  100227 3      2049/udp  nfs_acl
+
+|_ 100227 3      2049/udp6 nfs_acl
+
+2049/tcp open nfs_acl 3 (RPC #100227)
+
+7822/tcp open ssh   OpenSSH 7.9p1 Debian 10+deb10u1 (protocol 2.0)
+
+| ssh-hostkey: 
+
+|  2048 38:4f:e8:76:b4:b7:04:65:09:76:dd:23:4e:b5:69:ed (RSA)
+
+|  256 ac:d2:a6:0f:4b:41:77:df:06:f0:11:d5:92:39:9f:eb (ECDSA)
+
+|_ 256 93:f7:78:6f:cc:e8:d4:8d:75:4b:c2:bc:13:4b:f0:dd (ED25519)
+
+40681/tcp open mountd  1-3 (RPC #100005)
+
+40763/tcp open nlockmgr 1-4 (RPC #100021)
+
+41697/tcp open mountd  1-3 (RPC #100005)
+
+55723/tcp open mountd  1-3 (RPC #100005)</code></pre><p>发现nfs共享服务,使用showmount工具探测此服务:</p>
+<p> <em>showmount -e 192.168.245.11</em>  -&gt; 共享目录/home/morris</p>
+<p> 使用工具mount 挂载共享目录  <em>mount -t nfs 192.168.245.11:/home/morris dir-gongxiang</em></p>
+<p> 更改文件权限时受限: <em>chmod: changing permissions of ‘dir-gongxiang/‘: Read-only file system</em></p>
+<p> 那么查看其它端口的信息</p>
+<p> gobuster扫描目录 </p>
+<p>  首页有两段英文 翻译后:</p>
+<p>  你知道我们一家人是怎么给我们取名字的吧？ 他们给我命名为M，而您命名为N。好吧，除了名字缩写，我们的名字完全一样。 寿命太短，无法在您年老时将姓名保存在您的记忆中，所以为什么不呢！ 但是你知道是谁做的吗？ 我们喜欢詹姆斯·邦德电影的母亲。 她以我的名字命名为M。也许，她认为这部电影的导演太懒了，以至于没有想到   </p>
+<p>我的意思是，谁在乎，对吗？ 哈哈，我知道你也不喜欢我，我这讨厌的笑话。 但是我爱你，兄弟。 因此，在完成操作之前，请不要访问该网站。 除了备份，您什么都找不到，大声笑。</p>
+<p>顺便说一句，我知道你喜欢挑战，所以我也为你准备了一些东西。</p>
+<p>  从这可以得出这个靶机应该有两个用户 morris , norris</p>
+<p>又发现 192.168.245.11/mysite/bootstrap.min.cs 是可以下载的</p>
+<p> 下载打开后发现是jsfuck编码 并且用10个变量分开了 b1,b2,…b10</p>
+<p> 而且有一个注册页面也引用了这个cs</p>
+<p>  这里有一个技巧 在注册页面用控制台将它们合并起来 <em>console.log(b1+b2+b3+b4+b5+b6+b7+b8+b9+b10)</em></p>
+<p> 合并后使用该网址<a href="http://codertab.com/jsunfuck解码得到" target="_blank" rel="noopener">http://codertab.com/jsunfuck解码得到</a>: alert(“You’re smart enough to understand me. Here’s your secret, TryToGuessThisNorris@2k19”)</p>
+<p> 使用hydra工具测试是否可登陆ssh</p>
+<p> <em>hydra -L user -p TryToGuessThisNorris@2k19 ssh://192.168.245.11 -s 7822</em></p>
+<p> 发现norris可登陆 拿到第一个flag: 2c2836a138c0e7f7529aa0764a6414d0</p>
+<p> 发现ftp文件夹中有可疑文件  加上前面扫到21端口</p>
+<p> 用ftp登陆下载可疑文件</p>
+<p> exiftool查看图片详细信息 exiftool game.gif.bak  发现有摩斯电码</p>
+<p> 解码后得到:</p>
+<p>  HEY NORRIS, YOU’VE MADE THIS FAR. FAR FAR FROM HEAVEN WANNA SEE HELL NOW? HAHA YOU SURELY MISSED ME, DIDN’T YOU? OH DAMN MY BATTERY IS ABOUT TO DIE AND I AM UNABLE TO FIND MY CHARGER SO QUICKLY LEAVING A HINT IN HERE BEFORE THIS SYSTEM SHUTS DOWN AUTOMATICALLY. I AM SAVING THE GATEWAY TO MY DUNGEON IN A ‘SECRETFILE’ WHICH IS PUBLICLY ACCESSIBLE.</p>
+<p> 翻译后:</p>
+<p> 嗨，诺里斯，您做了这个。 从天堂湾（WANA WANNA）出发的远方现在看到地狱吗？ 哈哈，你一定想我了，不是吗？ 噢，我的电池即将死，在系统自动关闭之前，我无法快速找到提示，所以无法找到我的充电器。 我正在“可访问的”“秘密文件”中保存通往我的地下城的网关。</p>
+<p> 这里定位关键词 SECRETFILE   find命令查找一下 <em>find / -name SECRETFILE 2&gt;/dev/null</em></p>
+<p> 发现未找到  再用小写试下 <em>find / -name secretfile 2&gt;/dev/null</em>  -&gt;   /var/www/html/secretfile </p>
+<p> cat 下 -&gt; I see you’re here for the password. Holy Moly! Battery is dying !! Mentioning below for reference.</p>
+<p>  发现也没什么重要信息,但提示没电了,linux在文本编辑时意外断开的话是会创建备份的</p>
+<p> 查询下隐藏文件 隐藏了 .secretfile.swp  读取时没权限</p>
+<p> 那么将它下载到本机 用strings 工具查看得到可疑字符串 blehguessme090</p>
+<p> 前面了解到这个靶机有两个用户,那么这个用户可能是不是另一个用户morris的密码?</p>
+<p> ssh尝试登陆后成功  没有sudo权限等执行程序可利用</p>
+<p> Tar提权:</p>
+<p> 在norris用户上可以使用tar命令</p>
+<p> 使用命令查看tar权限  <em>/sbin/getcap -r / 2&gt;/dev/null</em>  -&gt;</p>
+<p>  /usr/bin/tar = cap_dac_read_search+ep  发现有读取和搜索文件的权限</p>
+<p> 使用tar将/root目录打包到/tmp中  <em>tar -zcvf /tmp/root.tar.gz /root</em></p>
+<p> 切换到tmp目录中 解压 <em>tar -zvxf root.tar.gz</em></p>
+<p> 拿到第二个flag:8fc9376d961670ca10be270d52eda423</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/9/" title="Vulnhub靶场做题记录-Connect-the-dots" target="_blank" rel="external">http://perthinking.xyz/Vulnhub%E9%9D%B6%E5%9C%BA/9/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/1eng" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/1eng" target="_blank"><span class="text-dark">1eng</span><small class="ml-1x">Information Security &amp; Student</small></a></h3>
+        <div>菜鸡一枚,哪位大佬收了我当挂件|···|</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/10/" title="Vulnhub靶场做题记录-Djiin"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/Vulnhub%E9%9D%B6%E5%9C%BA/8/" title="Vulnhub靶场做题记录-Me_and_mygirlfriend"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1eng" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/markwhile1" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'O0twhlXmhDaIrHEXxY8FBeB1-gzGzoHsz',
+    appKey: 'pIcHWaOiHXkAi1fMo3UsumkV',
+    placeholder: 'Ask your question, let&#39;s solve it together',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
